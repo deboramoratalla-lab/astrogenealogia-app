@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Analytics } from "@vercel/analytics/react";
 
 // ── DATA ──────────────────────────────────────────────────────────────────────
 const DEMO = {
@@ -3012,6 +3013,7 @@ export default function App(){
       {page==="form"&&<Form go={submit} back={()=>setPage("landing")}/>}
       {page==="loading"&&<Loading/>}
       {page==="dash"&&<Dashboard back={()=>setPage("landing")}/>}
+      <Analytics />
     </>
   );
 }
