@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Analytics } from '@vercel/analytics/react';
 
 // ── DATA ──────────────────────────────────────────────────────────────────────
 const DEMO = {
@@ -2455,7 +2456,7 @@ function PEsferas(){
                   <div style={{fontSize:11,color:C.muted,fontWeight:300}}>
                     <span style={{fontWeight:600,color:C.terra}}>Riesgo sistémico: </span>{def.riesgo}
                   </div>
-                </>}
+    </>}
               </div>
             );
           };
@@ -3012,6 +3013,7 @@ export default function App(){
       {page==="form"&&<Form go={submit} back={()=>setPage("landing")}/>}
       {page==="loading"&&<Loading/>}
       {page==="dash"&&<Dashboard back={()=>setPage("landing")}/>}
+      <Analytics />
     </>
   );
 }
