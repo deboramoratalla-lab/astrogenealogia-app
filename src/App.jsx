@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { Analytics } from "@vercel/analytics/react";
 
 // ── DATA ──────────────────────────────────────────────────────────────────────
-const DEMO = {
+const DEMO_DEBORA = {
   nombre: "Debora Moratalla Martín",
   fecha: "25 oct 1986", hora: "3:00h", lugar: "Madrid, España",
+  acDeg: 159.74, mcDeg: 66.37, acLabel:"Virgo 9°44'", mcLabel:"Géminis 6°22'",
   planetas: [
     { p:"Sol",      g:"☉", s:"Escorpio",    c:3,  deg:232.42, grado:"22°25'", r:false, el:"agua" },
     { p:"Luna",     g:"☽", s:"Cáncer",      c:10, deg:98.60,  grado:"08°36'", r:false, el:"agua" },
@@ -153,6 +155,7 @@ const DEMO = {
   },
   lilithQ:{
     posicion:"Leo · Casa 12",
+    formula:"⚸ Lilith Libra C2 + ⚷ Quirón Géminis C10 ℞",
     calculo:"Punto medio entre Lilith (Libra 20°48') y Quirón (Géminis 20°57'), resultando en Leo 20°52'. En casas iguales desde AC Virgo, cae en Casa 12.",
     definicion:"El punto medio Lilith-Quirón señala la parte psicológica y el área de vida donde expresamos la mayor sensación de fracaso existencial. Se percibe por las consecuencias de actitudes cristalizadas como «leyes mentira», que producen a la vez reacciones psicosomáticas. Nuestros puntos débiles a nivel corporal pueden apuntar a este punto medio.",
     circuito:"Toda creencia limitante sobre uno mismo se asocia a una herida y a una emoción repetitiva. Pudo formarse en la concepción o gestación y cristalizarse en el nacimiento, determinando sin darnos cuenta cómo afrontamos y nos relacionamos. El inconsciente proyecta dos posibilidades: seguir la ley mentira al pie de la letra, o sobrecompensarla.",
@@ -166,10 +169,10 @@ const DEMO = {
     sanacion:"El sendero sanador es aquello que, a través de la conexión con la propia esencia, permite mirar las veces que sea necesario las situaciones incómodas — hasta ser conscientes de la ley mentira, responsabilizarnos de ella y convertirla en ley eterna. Aquí: pasar de necesitar la mirada externa para sentirse valioso, a reconocer el propio valor desde dentro.",
   },
   casas:[
-    {eje:"4–10",sig:"Padre – Madre",plan:"Urano, Neptuno, Juno / Luna, Quirón (MC)"},
-    {eje:"1–7", sig:"Abuelos paternos",plan:"— / Júpiter, Vesta"},
-    {eje:"3–9", sig:"Abuelos maternos",plan:"Sol, Mercurio, Venus, Saturno / —"},
-    {eje:"11–5",sig:"Bisabuelos",plan:"— / Marte Acuario"},
+    {eje:"4–10",sig:"Padre – Madre",plan:"Urano, Neptuno, Juno / Luna, Quirón (MC)",lee:"La Casa 4 muestra a la madre y la Casa 10 al padre. Los planetas aquí describen su carácter, su profesión y lo que vivieron. Luna y Quirón en el eje del padre apuntan a su sensibilidad y a una herida en la figura paterna."},
+    {eje:"1–7", sig:"Abuelos paternos",plan:"— / Júpiter, Vesta",lee:"El eje AC–DC leído desde el padre revela a los abuelos paternos: su profesión, su carácter y lo que se heredó de ellos. Júpiter y Vesta señalan expansión y entrega en esa rama."},
+    {eje:"3–9", sig:"Abuelos maternos",plan:"Sol, Mercurio, Venus, Saturno / —",lee:"El eje 3–9 leído desde la madre muestra a los abuelos maternos. La fuerte carga aquí (Sol, Mercurio, Venus, Saturno) indica que el peso del linaje —identidad, palabra, afecto y deber— proviene sobre todo de esta rama."},
+    {eje:"11–5",sig:"Bisabuelos",plan:"— / Marte Acuario",lee:"Los bisabuelos aparecen en las casas más alejadas del eje. Marte aquí habla de una energía o un conflicto de acción que viene de muy atrás en el árbol y aún pide ser integrado."},
   ],
   soma:[
     {s:"Escorpio",   n:5, sys:"Reproductivo · colon · inmune", foco:true},
@@ -177,6 +180,8 @@ const DEMO = {
     {s:"Cáncer",     n:1, sys:"Estómago · pecho", foco:false},
     {s:"Capricornio",n:1, sys:"Huesos · articulaciones", foco:false},
   ],
+  somaFoco:"Concentración escorpiana (Sol, Mercurio, Venus, Plutón, Ceres) — mayor carga en sistema inmune, reproductivo y colon.",
+  notas:"La consultante presenta una concentración muy significativa en Escorpio (Sol, Mercurio, Venus, Plutón, Ceres), toda en Casa 3, con Luna en Cáncer en Casa 10. El signo oculto Piscis Casa 7 sugiere el amor idealizado como patrón inconsciente.\n\nExplorar en próxima sesión: la fuerza regenerativa del matriarcado (Luna-Plutón), el poder expresado a través de la palabra, y el punto medio Lilith-Quirón en Leo (necesidad de ser vista para sentirse valiosa).",
   sintesis:{
     hilo:"La carta de Debora gira en torno a un núcleo escorpiano intenso: Sol, Mercurio, Venus, Plutón y Ceres concentrados en el signo, la mayoría en Casa 3 — el territorio del aprendizaje, la palabra y los hermanos. Aunque no forman conjunciones exactas entre sí, la carga escorpiana sitúa la profundidad, el poder y la transformación en el centro. Los aspectos que ordenan el mapa son el trígono Luna–Plutón (la fuerza del matriarcado), la cuadratura Marte–Plutón (las luchas de poder) y el quíncuncio Luna–Marte (cuidar frente a actuar). La memoria enfática Agua confirma este territorio de emociones profundas y secretos familiares; la ausencia de Tierra señala la falta de arraigo que el sistema busca reparar. El signo oculto en Piscis Casa 7 añade el amor idealizado como patrón invisible, y el mandato de Saturno en Sagitario–Casa 3 imprime la exigencia de encontrar un sentido propio frente a lo heredado.",
     ejes:[
@@ -378,6 +383,662 @@ const DEMO = {
   ],
 };
 
+// ── CARTA 2: RU ──────────────────────────────────────────────────────────────
+const DEMO_RU = {
+  nombre: "Rubén Muro",
+  fecha: "7 ago 1990", hora: "3:00h", lugar: "Cáceres, España",
+  planetas: [
+    { p:"Sol",      g:"☉", s:"Leo",         c:2,  deg:134.28, grado:"14°17'", r:false, el:"fuego"},
+    { p:"Luna",     g:"☽", s:"Acuario",     c:9,  deg:319.63, grado:"19°38'", r:false, el:"aire" },
+    { p:"Mercurio", g:"☿", s:"Virgo",       c:3,  deg:161.95, grado:"11°57'", r:false, el:"tierra"},
+    { p:"Venus",    g:"♀", s:"Cáncer",      c:2,  deg:111.62, grado:"21°37'", r:false, el:"agua" },
+    { p:"Marte",    g:"♂", s:"Tauro",       c:12, deg:46.37,  grado:"16°22'", r:false, el:"tierra"},
+    { p:"Júpiter",  g:"♃", s:"Cáncer",      c:2,  deg:117.55, grado:"27°33'", r:false, el:"agua" },
+    { p:"Saturno",  g:"♄", s:"Capricornio", c:8,  deg:290.37, grado:"20°22'", r:true,  el:"tierra"},
+    { p:"Urano",    g:"♅", s:"Capricornio", c:7,  deg:276.18, grado:"06°11'", r:true,  el:"tierra"},
+    { p:"Neptuno",  g:"♆", s:"Capricornio", c:7,  deg:282.37, grado:"12°22'", r:true,  el:"tierra"},
+    { p:"Plutón",   g:"♇", s:"Escorpio",    c:5,  deg:225.00, grado:"15°00'", r:false, el:"agua" },
+    { p:"Nodo N.",  g:"☊", s:"Acuario",     c:8,  deg:307.30, grado:"07°18'", r:false, el:"aire" },
+    { p:"Quirón",   g:"⚷", s:"Cáncer",      c:2,  deg:111.60, grado:"21°36'", r:false, el:"agua" },
+    { p:"Lilith",   g:"⚸", s:"Acuario",     c:8,  deg:307.30, grado:"07°18'", r:false, el:"aire" },
+    { p:"Ceres",    g:"⚳", s:"Leo",         c:3,  deg:141.15, grado:"21°09'", r:false, el:"fuego",ast:true },
+    { p:"Palas",    g:"⚴", s:"Cáncer",      c:2,  deg:107.05, grado:"17°03'", r:false, el:"agua", ast:true },
+    { p:"Juno",     g:"⚵", s:"Escorpio",    c:5,  deg:222.05, grado:"12°03'", r:false, el:"agua", ast:true },
+    { p:"Vesta",    g:"⚶", s:"Tauro",       c:12, deg:53.15,  grado:"23°09'", r:false, el:"tierra",ast:true },
+  ],
+  acDeg: 75.28, mcDeg: 321.25, acLabel:"Géminis 15°17'", mcLabel:"Acuario 21°15'",
+  sintesis:{
+    hilo:"La carta de Rubén se organiza en torno a una fuerte carga de Tierra (cinco planetas), con un stellium en Cáncer en Casa 2 (Venus, Júpiter, Quirón, Palas) y otro en Capricornio en Casas 7-8 (Urano, Neptuno, Saturno). El Sol en Leo Casa 2 busca brillar a través de lo que se posee y se valora. El eje Cáncer–Capricornio (madre–padre, hogar–estructura) atraviesa toda la carta: la seguridad material y afectiva como territorio central. La memoria enfática Tierra habla de arraigo, deber y merecimiento; el signo oculto Capricornio en Casa 8 añade el miedo a la pérdida y la necesidad de reparar. Venus conjunción Quirón marca una herida afectiva profunda que pide sanación.",
+    ejes:[
+      {t:"Seguridad y merecimiento", d:"El stellium en Casa 2 (Sol, Venus, Júpiter, Quirón) sitúa el valor propio y los recursos en el centro. La pregunta es de dónde saca Ru su sentido de valía, y cuánto depende de lo material o de la mirada externa.", col:"plum"},
+      {t:"La herida afectiva", d:"Venus conjunción Quirón en Cáncer: una herida en el amor y en el sentirse cuidado, heredada de la línea materna. Sanarla es aprender a recibir afecto sin miedo.", col:"terra"},
+      {t:"Estructura y control (padre)", d:"El cúmulo de Capricornio y el signo oculto Capricornio Casa 8 hablan de mandatos de deber, autoridad y miedo a la pérdida. El trabajo es construir una estructura propia sin cargar el peso del linaje.", col:"blue"},
+      {t:"Poder y transformación", d:"Sol cuadratura Plutón y Marte oposición Plutón: luchas de poder heredadas que piden transformar la acción y la identidad sin imponer ni someterse.", col:"sage"},
+    ],
+    preguntas:[
+      "¿De dónde sacas tu sentido de valor, y cuánto depende de lo que posees?",
+      "¿Qué herida afectiva de tu línea materna sientes que llevas contigo?",
+      "¿Qué mandato de deber o de estructura heredaste del linaje paterno?",
+      "¿Dónde, en tu forma de actuar, la fuerza se vuelve lucha de poder?",
+    ],
+    movimiento:"El movimiento reparador integra las capas: reconocer el valor propio más allá de lo material (Casa 2), sanar la herida afectiva de Venus–Quirón aprendiendo a recibir, construir una estructura propia liberándose del peso del mandato paterno (Capricornio), y transformar la fuerza en creación en vez de en control. La seguridad verdadera no está en lo que se posee, sino en el arraigo interior.",
+  },
+  memoria:{
+    definicion:"Un todo de información que se acumula a lo largo de la historia familiar y queda enquistado en el campo mórfico, y que puede manifestarse a través de sincronicidades en nuestra historia de vida. La carta muestra con qué parte tenemos una lealtad — lo que no impide que existan otras memorias en el árbol.",
+    tipos:"La memoria enfática es cuando hay mayor fuerza en un solo elemento. Puede haber memorias bifásicas o trifásicas cuando empatan varios elementos. Y hay ausencia de memoria cuando un elemento no tiene ningún planeta.",
+    dominante:{
+      elemento:"Tierra",
+      pct:"5 de 10 · enfática",
+      jung:"Sensación",
+      linaje:"Femenino",
+      generacional:"Abuelas, mamá",
+      representantes:"Mujeres de autoridad en la familia. La figura materna. Los abuelos.",
+      emocion:"Miedo, dolor, ataques de pánico (por cosas que se repetían en 2ª y 3ª generación por abandonos), estados depresivos ligados al abandono.",
+      proyeccion:"Parálisis, austeridad, soledad, reserva, regresión, obsesión.",
+      arquetipos:"Terrateniente, agricultor, capataz, servidor, obrero, ermitaño, juez.",
+      tema:"La sensación de seguridad ante las pérdidas materiales y afectivas. Proteger el sistema y sentirse protegido por él. La obligación y el deber como forma de cumplimiento. Obedecer para merecer un lugar.",
+      descripcion:"La memoria Tierra conecta con las mujeres de autoridad del linaje (abuelas, madre) y con el deber, el arraigo y la seguridad. Todo se vive como algo que debe ser medido, cumplido y honrado. La lealtad se dirige a chivos expiatorios, castradores o figuras sobreprotectoras del sistema.",
+      embrollos:"Las propiedades y la manera en que se obtuvo el dinero. La prosperidad del sistema. El respeto por los valores y principios. Problemas de nutrición (anorexia, bulimia). La enfermedad y su repetición por amor ciego. La vergüenza y la culpa de aquello que se debe asumir.",
+      talentos:"Ahorro, disciplina, constancia, artesanía, talento culinario, habilidades manuales, construcción, autoridad, responsabilidad.",
+      sintomas:"Piel, articulaciones, huesos, riñones, vejiga, sistema endocrino, calcio, intestinos, tendones, cervicales, dientes, boca, esófago, oído y gusto.",
+    },
+    ausencia:{
+      elemento:"Fuego / Aire",
+      jung:"Intuición / Pensamiento",
+      titulo:"Escasez de fuego y aire",
+      puntos:[
+        "Con solo un planeta en fuego (Sol) y uno en aire (Luna), la iniciativa espontánea y la ligereza mental son recursos escasos que piden activarse conscientemente.",
+        "La tendencia es a quedarse en lo concreto y lo seguro (Tierra) y en lo emocional (Agua), evitando el riesgo (fuego) y la abstracción desapegada (aire).",
+        "El impulso vital y la capacidad de soltar y relativizar necesitan cultivarse: el sistema tiende al peso, la contención y la responsabilidad.",
+      ],
+      queRepresenta:"El fuego es impulso, entusiasmo y fe en la vida; el aire es la mente, la comunicación y la perspectiva. Su escasez señala un linaje volcado en el deber y la supervivencia material, con poco espacio para el juego y la ligereza.",
+      integrar:"El trabajo invita a buscar actividades que enciendan el entusiasmo y aligeren la mente — el juego, la creatividad, el movimiento, la palabra — para equilibrar el peso de la Tierra con la chispa del fuego y el aire.",
+    },
+  },
+  signoOculto:{
+    signo:"Capricornio",
+    casa:"Casa 8",
+    casaTitulo:"Miedo a morir",
+    definicion:"El signo oculto es el código encriptado que trae la información de cada sistema familiar, donde el individuo encuentra las claves para desanudar sus embrollos sistémicos. Muestra las luces y sombras que traemos, los potenciales despiertos o los puntos ciegos, y las trampas psicológicas en las que caemos. Nos habla de nuestro destino individual.",
+    calculo:"Se cuenta cada planeta según su elemento y cualidad. El signo oculto NO puede ser el signo del Sol (Leo), la Luna (Acuario) ni el Ascendente (Géminis). El elemento dominante es Tierra y la cualidad con mayor puntaje es la Cardinal, lo que da Capricornio como signo oculto.",
+    aforismo:"La sabiduría de los ancestros reconoce al tiempo como un valioso aliado y la experiencia como las arrugas de un antiguo pergamino.",
+    donOculto:"Reparar y construir. Capacidad de obtener bases personales sólidas y forjar objetivos firmes como propósito de vida.",
+    virtud:"La experiencia — no la erudición, sino el saber que se practica un día a la vez.",
+    vicio:"La avaricia. Lo que estanca a esta persona: no ofrecer a otros sus herramientas y su experiencia. También la rigidez y el peso del deber.",
+    retos:[
+      "¿Tengo mi propia estructura?",
+      "¿Me he liberado de las cargas familiares o sigo llevando ese peso?",
+      "¿Actúo con responsabilidad y le doy a los demás la suya?",
+    ],
+    somatico:"Congelarse, obstruirse, parálisis. Limitaciones. Déficit de vitaminas o nutrientes. Desgastes en articulaciones, ligamentos, tendones; problemas de calcio.",
+    proposito:"Ocupar la jerarquía que le corresponde. Construir sus propias estructuras. Restaurar un orden personal. Liberarse del peso adquirido por los mandatos del pasado. Invertir el tiempo y disfrutarlo, dejando de ser «la cabra mochilera» que carga todo el peso del sistema.",
+    casaLectura:"En Casa 8, «miedo a morir». Puede surgir inseguridad en lo que se ofrece y lo que se recibe, por embrollos de la generación de los abuelos: dificultades en herencias, bienes compartidos o sometimientos. Tiende a originar problemas con pagos, deudas, divorcios e impuestos. El propósito es superar ese miedo a morir en el intento y liberarse de las cadenas que estancan el desarrollo del ser.",
+    planetasEn:"Saturno y el Nodo Norte en Casa 8 refuerzan este signo oculto: el mandato del deber y el destino evolutivo se juegan en el territorio de lo compartido, las pérdidas y la transformación profunda.",
+  },
+  lilithQ:{
+    posicion:"Libra · Casa 5",
+    formula:"⚸ Lilith Acuario C8 + ⚷ Quirón Cáncer C2",
+    calculo:"Punto medio entre Lilith (Acuario 7°18') y Quirón (Cáncer 21°36'), resultando en Libra 29°26'. En casas iguales desde AC Géminis, cae en Casa 5.",
+    definicion:"El punto medio Lilith-Quirón señala la parte psicológica y el área de vida donde expresamos la mayor sensación de fracaso existencial. Se percibe por las consecuencias de actitudes cristalizadas como «leyes mentira», que producen a la vez reacciones psicosomáticas.",
+    circuito:"Toda creencia limitante sobre uno mismo se asocia a una herida y a una emoción repetitiva. Pudo formarse en la gestación y cristalizarse en el nacimiento, determinando cómo afrontamos y nos relacionamos. El inconsciente proyecta dos posibilidades: seguir la ley mentira al pie de la letra, o sobrecompensarla.",
+    antecedentes:"En Libra, el fracaso se juega en el terreno del vínculo y la armonía. Pudo haber en el linaje relaciones desequilibradas, dependencias afectivas, o la creencia de que el propio valor depende de agradar y complacer al otro. La necesidad de aprobación se hereda como mandato.",
+    leyMentira:"«No valgo si no agrado.» «Sin el otro no soy nada.»",
+    sobrecompensacion:"Complacer en exceso, evitar el conflicto a toda costa, buscar constantemente la aprobación y la armonía externa. Perderse en las relaciones para no sentir el vacío propio.",
+    somatizacion:"Riñones, zona lumbar, equilibrio hormonal. Tensiones ligadas a la dificultad de poner límites y decir que no.",
+    leyEterna:"Encontrar el equilibrio desde dentro. Aprender que el propio valor no depende de la mirada del otro. Poner límites sanos y elegir los vínculos desde la libertad, no desde la necesidad.",
+    experiencia:"Casa 5: el fracaso y su sendero se juegan en la creatividad, el placer, los hijos y la expresión del yo. Se trata de liberar al niño interior de la necesidad de aprobación y permitirse crear y disfrutar desde la autenticidad.",
+    aspectos:"Venus · Quirón · Lilith · Nodo Norte",
+    sanacion:"El sendero sanador permite mirar las situaciones incómodas hasta ser consciente de la ley mentira, responsabilizarse de ella y convertirla en ley eterna. Aquí: pasar de necesitar la aprobación del otro para sentirse valioso, a reconocer el propio valor y equilibrio desde dentro.",
+  },
+  ordenes:{
+    intro:"«Aparte del amor, aún se necesita algo más para que ese amor se logre: se requiere el conocimiento y el reconocimiento de un orden del amor que actúa en las profundidades del alma.» — Bert Hellinger. Los tres órdenes se leen en la carta a través de planetas concretos y sus aspectos.",
+    pertenencia:{
+      planeta:"Luna", glifo:"☽", titulo:"El derecho a un lugar",
+      def:"La vinculación o pertenencia enseña que cada persona en una familia tiene derecho a pertenecer y a tener un lugar. La Luna simboliza los vínculos primarios, la contención psicológica y a quienes nos criaron. Habla de la madre y de las mujeres del linaje.",
+      inclusionExclusion:"Los conflictos lunares muestran embrollos por la omisión de personas del clan. La inclusión permite la integración y lleva a la libertad; la exclusión (por un evento trágico, vergonzoso, una enfermedad) deja fuera a aquellos cuyos destinos no fueron aceptados.",
+      posicionDebora:"Luna en Acuario · Casa 9",
+      aspectoDebora:{
+        nom:"Luna oposición Ceres · Luna cuadratura Marte",
+        txt:"La Luna en Acuario habla de una vinculación materna vivida con distancia, desapego o desde lo colectivo más que desde lo íntimo. La oposición a Ceres (la Madre nutricia) señala una tensión entre la necesidad de libertad y la de cuidado: la madre pudo vivirse fría o ausente, o hubo dificultad para recibir la nutrición emocional. La cuadratura a Marte añade la rabia contenida. El trabajo es integrar la necesidad de pertenecer con la de ser libre, sin tener que elegir entre ambas.",
+      },
+    },
+    jerarquia:{
+      planeta:"Sol · Júpiter · Saturno", glifo:"☉", titulo:"El lugar que corresponde",
+      def:"El respeto y la jerarquía tratan de ocupar el lugar que a cada quien le corresponde. No se trata de quién es mejor, sino de quién llegó primero en el orden temporal. El Sol habla del reconocimiento de la vida otorgada por el padre; Júpiter, de la gratitud; Saturno, del respeto hacia lo establecido.",
+      tresPlanetas:[
+        {p:"Sol",r:"Reconocimiento ante la vida",d:"El Sol en Leo Casa 2 busca brillar y ser reconocido a través del valor propio. Cómo Ru reconoce su propia vida y cuánto necesita la mirada externa."},
+        {p:"Júpiter",r:"Gratitud hacia la vida",d:"Júpiter en Cáncer Casa 2, en el stellium: la abundancia y la fe se ligan a lo emocional y a la seguridad. El padre idealizado como fuente de protección."},
+        {p:"Saturno",r:"Respeto hacia la vida",d:"Saturno en Capricornio Casa 8, retrógrado: el peso del deber y la autoridad en su máxima expresión. La estructura como mandato que hay que aprender a ejercer con amor."},
+      ],
+      posicionDebora:"Sol en Leo C2 · Saturno en Capricornio C8 ℞",
+      aspectoDebora:{
+        nom:"Sol cuadratura Plutón · Venus oposición Saturno",
+        txt:"El Sol cuadratura Plutón introduce una lucha de poder en la identidad: la necesidad de brillar choca con fuerzas de control profundas del linaje. Venus oposición Saturno marca la tensión entre el afecto y el deber: el amor vivido como algo que se gana con esfuerzo y responsabilidad, o que se ve limitado por la autoridad. El trabajo es ocupar el propio lugar sin competir con el poder heredado y permitirse recibir afecto sin condiciones.",
+      },
+    },
+    equilibrio:{
+      planeta:"Marte · Venus", glifo:"♀", titulo:"El dar y el recibir",
+      def:"Cuando se respetan la pertenencia y la jerarquía, llega el equilibrio entre el dar (Marte) y el recibir (Venus). El que da demasiado amenaza la relación; el que solo toma se llena de culpa y desarrolla dependencias.",
+      desequilibrios:[
+        {t:"Dar en exceso (Marte)",d:"Quien recibe se siente en deuda. Se da desde una postura de poder que obliga al otro."},
+        {t:"Recibir en exceso (Venus)",d:"Tomar en demasía sin devolver llena de culpa y crea dependencias afectivas."},
+      ],
+      posicionDebora:"Venus en Cáncer · Casa 2 / Marte en Tauro · Casa 12",
+      aspectoDebora:{
+        nom:"Venus conjunción Quirón · Marte oposición Plutón",
+        txt:"Venus conjunción Quirón en Cáncer es el aspecto central del equilibrio en esta carta: una herida profunda en el dar y recibir afecto, heredada de la línea materna. El amor se vive con una cicatriz — la sensación de no merecer o de que amar duele. Marte oposición Plutón añade la lucha de poder en la acción. El trabajo es sanar la herida afectiva permitiéndose recibir sin miedo, y canalizar la fuerza para crear en vez de para controlar.",
+      },
+    },
+  },
+  saturno:{
+    mandatoDef:"Del latín manus (mano) + dare (dar): un encargo que debe darse en mano. Hay que cumplir con algo para poder pertenecer. Tal como se vive Saturno en la carta, así se transmiten las reglas a los hijos.",
+    signo:"Capricornio",
+    signoNarrativa:"El signo plantea la narrativa del mandato heredado. En Capricornio —su domicilio—, Saturno se expresa en su máxima potencia: los mandatos giran en torno al deber, la autoridad, la estructura, el logro y la responsabilidad.",
+    casa:"Casa 8",
+    casaNarrativa:"La casa señala desde qué ámbito se viven los mandatos. En Casa 8, el mandato opera en el terreno de lo compartido, las herencias, las pérdidas, la sexualidad y la transformación.",
+    casaLectura:"Saturno en Casa 8 se expresa como miedo a la pérdida y al abandono, dificultad para confiar y soltar el control en lo íntimo y lo compartido. Puede haber embrollos con herencias, deudas o dependencias del sistema. La sombra: el control como defensa ante el miedo a morir o a perder.",
+    casaEscenario:"La Casa 8 es el escenario de las crisis transformadoras, lo heredado (material y emocional) y los vínculos profundos. Describe cómo nos fusionamos y cómo nos regeneramos.",
+    mandatos:[
+      {t:"«Debes ser responsable»", d:"El deber y la responsabilidad como forma de merecer un lugar en el sistema."},
+      {t:"«El tiempo es oro»", d:"Todo debe ser medido, cumplido, aprovechado. La creencia de que el tiempo apremia."},
+      {t:"«No dependas de nadie»", d:"El mandato de la autosuficiencia y el miedo a soltar el control en lo compartido."},
+      {t:"«Hay que construir con esfuerzo»", d:"Lo que vale cuesta; el logro solo es legítimo si viene del sacrificio."},
+    ],
+    integrado:"Cuando las bases familiares se vivieron desde un orden sano, esta posición da una capacidad extraordinaria de construir, sostener y perdurar. Autoridad natural, disciplina, madurez y la sabiduría de la experiencia. Un pilar sólido para el sistema.",
+    noIntegrado:"El peso del deber puede volverse rigidez, control y miedo a la pérdida. Dificultad para disfrutar, para soltar, para confiar. La cabra mochilera que carga el peso de todo el sistema y no se permite descansar ni recibir.",
+    claveLiberadora:"Estructura propia",
+    aspectos:[
+      {asp:"♄ ☍ ♀", nom:"Saturno oposición Venus", desc:"El mandato afecta al afecto y al valor: el amor vivido como deber o como algo limitado por la autoridad. Mujeres del clan que vivieron el afecto con restricción o sacrificio.", figura:"Lo afectivo / las mujeres del clan"},
+      {asp:"♄ ☍ ⚷", nom:"Saturno oposición Quirón", desc:"La estructura choca con la herida: el mandato del deber se opone a la necesidad de sanar. Tensión entre cumplir y cuidarse.", figura:"La herida / lo que pide sanación"},
+      {asp:"♄ ⚻ ⚳", nom:"Saturno quíncuncio Ceres", desc:"Reajuste entre el deber y el cuidado: la nutrición materna vivida con exigencia o condición.", figura:"Lo materno / el cuidado"},
+    ],
+    aspectoLeyenda:"Los aspectos a Saturno (hasta Júpiter) revelan de qué figura provienen los mandatos: Saturno-Sol, del padre; Saturno-Luna, de la madre; Saturno-Venus, de las mujeres del clan; Saturno-Marte, de hombres enérgicos; Saturno-Mercurio, de una fuente externa; Saturno-Urano, hasta 4 generaciones atrás; Saturno-Plutón, más allá.",
+  },
+  ascendente:{
+    ac:"Géminis 15°17'",
+    mc:"Acuario 21°15'",
+    definicion:"El Ascendente Sistémico es la puerta de entrada al árbol: marca desde qué lugar el sistema familiar te colocó y qué papel esperaba de ti. A través de las casas derivadas, la carta se convierte en un mapa del linaje.",
+    acLectura:"Ascendente Géminis: el sistema pidió comunicación, versatilidad, curiosidad y ligereza. La entrada al mundo se hizo desde la palabra, el aprendizaje y la capacidad de conectar ideas y personas. La sombra: dispersión, dificultad para profundizar, inquietud constante.",
+    mcLectura:"Medio Cielo en Acuario: la vocación pública se orienta a lo colectivo, lo original, lo humanitario o lo tecnológico. El linaje llama a un lugar en el mundo ligado a la innovación, la libertad o el servicio a un grupo.",
+    casasDerivadasIntro:"Las casas derivadas permiten leer, desde el Ascendente del consultante, la carta de cada miembro del sistema. Se cuenta girando la rueda: la Casa 4 es la madre, la 10 el padre, y desde ahí se derivan abuelos y bisabuelos.",
+  },
+  casas:[
+    {eje:"4–10",sig:"Padre – Madre",plan:"Mercurio / Luna, Nodo Norte",lee:"La Casa 4 muestra a la madre y la 10 al padre. Mercurio en el eje de la madre habla de su mente y su forma de comunicar; Luna y Nodo Norte en el del padre apuntan a su sensibilidad y a un destino evolutivo ligado a esa figura."},
+    {eje:"1–7", sig:"Abuelos paternos",plan:"— / Urano, Neptuno",lee:"El eje AC–DC leído desde el padre revela a los abuelos paternos. Urano y Neptuno señalan rupturas, idealizaciones o disoluciones en esa rama del árbol — algo poco definido o poco hablado."},
+    {eje:"3–9", sig:"Abuelos maternos",plan:"Ceres / Saturno",lee:"El eje 3–9 desde la madre muestra a los abuelos maternos. Ceres (la nutrición) y Saturno (el deber) indican una rama marcada por el cuidado exigente y la responsabilidad heredada."},
+    {eje:"11–5",sig:"Bisabuelos",plan:"— / Plutón, Juno",lee:"Los bisabuelos aparecen en las casas más alejadas. Plutón y Juno hablan de intensidad, poder y vínculos de compromiso vividos con profundidad en las generaciones más antiguas del árbol."},
+  ],
+  asteroides:{
+    intro:"Los cuatro asteroides femeninos revelan figuras concretas del linaje —madre, hija, esposa, hermana— y las memorias que portan. Se activan a través de sus aspectos y su posición.",
+    lista:[
+      {
+        g:"⚳", nombre:"Ceres", arquetipo:"La Madre", elemento:"Fuego", pos:"Leo · Casa 3",
+        lectura:"Ceres simboliza la nutrición y el cuidado. Revela vínculos madre-hijo y heridas de abandono. En Leo, la nutrición se liga al reconocimiento y al brillo: ser cuidado siendo visto y admirado.",
+        conflicto:"Herida de abandono, la necesidad de destacar para recibir amor. Madres que nutrían a través de la exigencia de brillar.",
+        manifestacion:"Búsqueda de reconocimiento como forma de sentirse querido. Generosidad que espera admiración a cambio.",
+        pregunta:"¿Necesito destacar para sentirme querido?",
+        matiz:"En Leo Casa 3, el cuidado se juega en la comunicación y el aprendizaje: nutrir con la palabra, o la herida de no haber sido escuchado entre hermanos.",
+      },
+      {
+        g:"⚴", nombre:"Palas", arquetipo:"La Hija", elemento:"Agua", pos:"Cáncer · Casa 2",
+        lectura:"Palas Atenea representa la inteligencia estratégica y la hija del padre. En Cáncer, la inteligencia se pone al servicio de la protección emocional y del cuidado del clan.",
+        conflicto:"Mujeres del linaje que usaron la astucia para proteger a la familia. La estrategia al servicio del vínculo, a veces perdiendo la propia voz.",
+        manifestacion:"Capacidad de proteger y anticipar las necesidades ajenas. Intuición estratégica. Dificultad para separar la razón de la emoción.",
+        pregunta:"¿Uso mi inteligencia para cuidar a otros olvidándome de mí?",
+        matiz:"En Cáncer Casa 2, la estrategia se orienta a la seguridad material y afectiva: pensar para proteger lo que se tiene y a quienes se ama.",
+      },
+      {
+        g:"⚵", nombre:"Juno", arquetipo:"La Esposa", elemento:"Agua", pos:"Escorpio · Casa 5",
+        lectura:"Juno representa el compromiso y el matrimonio. En Escorpio, el vínculo se vive con intensidad, pasión y profundidad: el compromiso como fusión total o como lucha de poder.",
+        conflicto:"Heridas de traición, celos, relaciones donde el poder y el control se mezclan con el amor. Vínculos intensos de vida o muerte.",
+        manifestacion:"Relaciones apasionadas y transformadoras. Necesidad de fusión profunda. Miedo a la traición y tendencia al control.",
+        pregunta:"¿Qué espero de la pareja, y desde qué intensidad lo vivo?",
+        matiz:"En Escorpio Casa 5, el compromiso se juega en el placer, la creatividad y los hijos: amar como transformación y entrega total.",
+      },
+      {
+        g:"⚶", nombre:"Vesta", arquetipo:"La Hermana mayor", elemento:"Tierra", pos:"Tauro · Casa 12",
+        lectura:"Vesta simboliza el fuego interior y la renuncia. En Tauro, la entrega se ancla en el cuerpo, los sentidos y la constancia: sostener con presencia y estabilidad.",
+        conflicto:"Mujeres que sostuvieron al sistema desde el trabajo callado y la constancia. Sacrificio material y corporal en silencio.",
+        manifestacion:"Personas discretas, constantes, que sostienen sin exponerse. Necesidad de un espacio propio y sagrado. Sensualidad reprimida o sublimada.",
+        pregunta:"¿A quién sostengo desde el silencio, olvidándome de mi cuerpo y mi placer?",
+        matiz:"En Tauro Casa 12 y en el terreno de lo oculto, la renuncia se vuelve espiritual y corporal a la vez: sostener desde lo invisible, con los pies en la tierra.",
+      },
+    ],
+  },
+  tiposAspecto: DEMO_DEBORA.tiposAspecto,
+  soma:[
+    {s:"Capricornio",n:3, sys:"Huesos · articulaciones · piel · rodillas", foco:true},
+    {s:"Cáncer",     n:2, sys:"Estómago · pecho · sistema digestivo", foco:false},
+    {s:"Tauro",      n:1, sys:"Garganta · cuello · tiroides", foco:false},
+    {s:"Escorpio",   n:1, sys:"Reproductivo · colon", foco:false},
+    {s:"Leo",        n:1, sys:"Corazón · espalda", foco:false},
+  ],
+  somaFoco:"Concentración en Capricornio (Urano, Neptuno, Saturno) más la memoria enfática Tierra — mayor carga en el sistema óseo, articular, la piel y el sistema endocrino. Tendencia a la rigidez, la parálisis y el desgaste articular con el tiempo.",
+  notas:"Rubén presenta memoria enfática Tierra (5 planetas) con stellium en Cáncer Casa 2 (Venus, Júpiter, Quirón, Palas) y cúmulo en Capricornio. Venus conjunción Quirón marca la herida afectiva central. El signo oculto Capricornio Casa 8 apunta al miedo a la pérdida y la necesidad de reparar.\n\nExplorar en próxima sesión: la herida en el dar y recibir afecto (Venus-Quirón), el peso del mandato paterno de deber (Capricornio), y de dónde saca su sentido de valor (Casa 2).",
+  aspectos:[
+    {
+      p1:"Venus", g1:"♀", p2:"Quirón", g2:"⚷", tipo:"conjunción", orbe:"Cáncer C2 · orbe 0.0°",
+      tema:"La herida en el amor y el cuidado",
+      conflicto:"Una herida afectiva profunda heredada de la línea materna: la sensación de que amar duele o de no merecer ser cuidado. Algo en el vínculo materno quedó dolido.",
+      emocion:"Vulnerabilidad, sensibilidad extrema en los vínculos, miedo al rechazo afectivo.",
+      adulta:"Gran capacidad de comprender el dolor ajeno y de acompañar heridas; puede volverse sanador afectivo. Riesgo de repetir vínculos donde el amor y la herida se mezclan.",
+      repeticion:"Relaciones donde se cuida al otro desde la propia herida, o donde se busca sanar amando. La cicatriz afectiva del linaje femenino.",
+      pregunta:"¿Dónde aprendí que amar duele, y cómo puedo permitirme recibir afecto sin miedo?",
+      orden:"Equilibrio",
+      focoDebora:true,
+    },
+    {
+      p1:"Sol", g1:"☉", p2:"Plutón", g2:"♇", tipo:"cuadratura", orbe:"Leo C2 – Escorpio C5 · orbe 0.7°",
+      tema:"Fricción entre la identidad y el poder",
+      conflicto:"La necesidad de brillar y afirmarse (Sol en Leo) choca con fuerzas de control y transformación profundas del linaje. Luchas de poder en torno a quién se es.",
+      emocion:"Intensidad, deseo de control, miedo a la propia fuerza o a ser aplastado por la de otros.",
+      adulta:"Enorme capacidad de regeneración y transformación de la identidad. Riesgo de imponer o de vivir la propia potencia como amenaza.",
+      repeticion:"Situaciones donde afirmarse implica una lucha de poder; crisis que obligan a reinventar la identidad.",
+      pregunta:"¿Cómo brillo desde mi autenticidad sin necesitar imponerme ni temer el poder ajeno?",
+      orden:"Jerarquía",
+      focoDebora:true,
+    },
+    {
+      p1:"Venus", g1:"♀", p2:"Saturno", g2:"♄", tipo:"oposición", orbe:"Cáncer C2 – Capricornio C8 · orbe 1.2°",
+      tema:"Polarización entre el afecto y el deber",
+      conflicto:"El amor vivido como algo que se gana con esfuerzo, o limitado por la autoridad y el deber. Mujeres del clan que vivieron el afecto con restricción o sacrificio.",
+      emocion:"Sensación de no merecer amor, frialdad afectiva heredada, miedo al rechazo.",
+      adulta:"Compromiso serio y duradero en los vínculos, pero con dificultad para permitirse disfrutar y recibir. El afecto como responsabilidad.",
+      repeticion:"Relaciones donde el amor se mezcla con el deber o la carencia; elegir vínculos que confirman que amar cuesta.",
+      pregunta:"¿Dónde vivo el afecto como una obligación en lugar de un regalo?",
+      orden:"Equilibrio",
+      focoDebora:false,
+    },
+    {
+      p1:"Marte", g1:"♂", p2:"Plutón", g2:"♇", tipo:"oposición", orbe:"Tauro C12 – Escorpio C5 · orbe 1.4°",
+      tema:"Polarización entre la acción y el poder",
+      conflicto:"Luchas de poder heredadas donde la acción (Marte) se enfrenta a fuerzas de control profundas (Plutón). Conflictos de dominación y sometimiento en el sistema.",
+      emocion:"Rabia intensa, deseo de control, energía que puede volverse destructiva o transformadora.",
+      adulta:"Fuerza de voluntad enorme; capacidad de acción radical. Riesgo de luchas de poder o de vivir la potencia como amenaza.",
+      repeticion:"Pulsos de poder: someterse o dominar. La energía del linaje pide canalizarse hacia la creación.",
+      pregunta:"¿Cómo uso mi fuerza para transformar en vez de para imponer?",
+      orden:"Equilibrio",
+      focoDebora:true,
+    },
+    {
+      p1:"Mercurio", g1:"☿", p2:"Neptuno", g2:"♆", tipo:"trígono", orbe:"Virgo C3 – Capricornio C7 · orbe 0.4°",
+      tema:"Fluidez entre la mente y lo sutil",
+      conflicto:"Recurso heredado: la capacidad de unir el pensamiento concreto (Mercurio en Virgo) con la intuición y lo espiritual (Neptuno). Una mente sensible y perceptiva.",
+      emocion:"Sensibilidad, imaginación, intuición al servicio del detalle.",
+      adulta:"Talento para la comunicación inspirada, la escritura, la sanación a través de la palabra. Recurso que fluye pero puede volverse zona de escape si no se ancla.",
+      repeticion:"Como trígono, es un don disponible que puede darse por sentado o usarse para evadirse.",
+      pregunta:"¿Cómo pongo mi sensibilidad mental al servicio de algo concreto?",
+      orden:"Jerarquía",
+      focoDebora:false,
+    },
+    {
+      p1:"Luna", g1:"☽", p2:"Ceres", g2:"⚳", tipo:"oposición", orbe:"Acuario C9 – Leo C3 · orbe 1.5°",
+      tema:"Polarización entre la libertad y el cuidado",
+      conflicto:"Tensión entre la necesidad de autonomía y distancia (Luna en Acuario) y la de nutrición y cuidado (Ceres). La madre pudo vivirse fría, ausente o desde lo colectivo.",
+      emocion:"Ambivalencia entre querer libertad y necesitar cuidado; dificultad para recibir nutrición emocional.",
+      adulta:"Independencia emocional y capacidad de cuidar a muchos, pero con dificultad para la intimidad cercana. El afecto vivido desde la distancia.",
+      repeticion:"Alejarse para no depender; buscar el cuidado y a la vez rechazarlo.",
+      pregunta:"¿Cómo integro mi necesidad de libertad con la de ser cuidado?",
+      orden:"Pertenencia",
+      focoDebora:false,
+    },
+    {
+      p1:"Saturno", g1:"♄", p2:"Quirón", g2:"⚷", tipo:"oposición", orbe:"Capricornio C8 – Cáncer C2 · orbe 1.2°",
+      tema:"Polarización entre el deber y la herida",
+      conflicto:"La estructura y el mandato (Saturno) se oponen a la herida que pide sanación (Quirón). Tensión entre cumplir con el deber y atender la propia vulnerabilidad.",
+      emocion:"Sensación de que no hay tiempo ni permiso para sanar; el deber por encima del cuidado propio.",
+      adulta:"Capacidad de sostener el dolor con madurez, pero con riesgo de postergar indefinidamente la propia sanación.",
+      repeticion:"Anteponer la responsabilidad al cuidado de uno mismo; heredar el mandato de aguantar.",
+      pregunta:"¿Me doy permiso para sanar, o siempre hay un deber más urgente?",
+      orden:"Jerarquía",
+      focoDebora:false,
+    },
+    {
+      p1:"Neptuno", g1:"♆", p2:"Plutón", g2:"♇", tipo:"sextil", orbe:"Capricornio C7 – Escorpio C5 · orbe 2.6°",
+      tema:"Oportunidad de transformación profunda y sensible",
+      conflicto:"Recurso generacional: capacidad de regenerar desde lo sutil y lo compasivo. Compartido por toda una generación.",
+      emocion:"Intuición profunda, sensibilidad hacia lo invisible y lo colectivo.",
+      adulta:"Talento para acompañar procesos de transformación y sanación; disponible si se activa conscientemente.",
+      repeticion:"Recurso que se estanca si no se pone al servicio de forma deliberada.",
+      pregunta:"¿Cómo activo este don de transformación en lugar de dejarlo dormido?",
+      orden:"Equilibrio",
+      focoDebora:false,
+    },
+  ],
+  esferas: DEMO_DEBORA.esferas,
+  cfg: null,
+};
+
+// Variable mutable que apunta a la carta activa (Debora por defecto)
+// ── CARTA 3: ELI ─────────────────────────────────────────────────────────────
+const DEMO_ELI = {
+  nombre: "Eli",
+  fecha: "21 may 1993", hora: "6:00h", lugar: "Graz, Austria",
+  acDeg: 71.82, mcDeg: 311.82, acLabel:"Géminis 11°49'", mcLabel:"Acuario 11°49'",
+  planetas: [
+    { p:"Sol",      g:"☉", s:"Géminis",     c:12, deg:60.12,  grado:"00°07'", r:false, el:"aire" },
+    { p:"Luna",     g:"☽", s:"Tauro",       c:12, deg:55.18,  grado:"25°11'", r:false, el:"tierra"},
+    { p:"Mercurio", g:"☿", s:"Géminis",     c:12, deg:66.27,  grado:"06°16'", r:false, el:"aire" },
+    { p:"Venus",    g:"♀", s:"Aries",       c:11, deg:16.22,  grado:"16°13'", r:false, el:"fuego"},
+    { p:"Marte",    g:"♂", s:"Leo",         c:2,  deg:131.65, grado:"11°39'", r:false, el:"fuego"},
+    { p:"Júpiter",  g:"♃", s:"Libra",       c:4,  deg:184.93, grado:"04°56'", r:true,  el:"aire" },
+    { p:"Saturno",  g:"♄", s:"Acuario",     c:9,  deg:329.98, grado:"29°59'", r:false, el:"aire" },
+    { p:"Urano",    g:"♅", s:"Capricornio", c:8,  deg:291.93, grado:"21°56'", r:true,  el:"tierra"},
+    { p:"Neptuno",  g:"♆", s:"Capricornio", c:8,  deg:290.93, grado:"20°56'", r:true,  el:"tierra"},
+    { p:"Plutón",   g:"♇", s:"Escorpio",    c:6,  deg:233.97, grado:"23°58'", r:true,  el:"agua" },
+    { p:"Nodo N.",  g:"☊", s:"Sagitario",   c:7,  deg:252.15, grado:"12°09'", r:false, el:"fuego"},
+    { p:"Quirón",   g:"⚷", s:"Leo",         c:3,  deg:138.22, grado:"18°13'", r:false, el:"fuego"},
+    { p:"Lilith",   g:"⚸", s:"Acuario",     c:9,  deg:312.15, grado:"12°09'", r:false, el:"aire" },
+    { p:"Ceres",    g:"⚳", s:"Aries",       c:11, deg:13.88,  grado:"13°53'", r:false, el:"fuego",ast:true },
+    { p:"Palas",    g:"⚴", s:"Piscis",      c:9,  deg:338.08, grado:"08°05'", r:false, el:"agua", ast:true },
+    { p:"Juno",     g:"⚵", s:"Leo",         c:2,  deg:120.40, grado:"00°24'", r:false, el:"fuego",ast:true },
+    { p:"Vesta",    g:"⚶", s:"Piscis",      c:9,  deg:332.88, grado:"02°53'", r:false, el:"agua", ast:true },
+  ],
+  sintesis:{
+    hilo:"La carta de Eli respira Aire: cuatro planetas en signos aéreos, con un stellium en Géminis en Casa 12 (Sol, Mercurio, y Luna en Tauro cerca del Ascendente). La mente, la palabra y la conexión de ideas son su territorio, pero desde la Casa 12 —lo oculto, lo inconsciente— la identidad se construye en la interioridad antes que en la exposición. El signo oculto Acuario en Casa 9 apunta al don de la genialidad y a la necesidad de romper con las creencias heredadas para crear un sentido propio. La conjunción Urano–Neptuno (generacional) en Casa 8 y el punto medio Lilith–Quirón en Escorpio marcan una transformación profunda que se juega en lo compartido y lo invisible.",
+    ejes:[
+      {t:"La mente y la palabra", d:"El stellium de Géminis en Casa 12 sitúa el pensamiento y la comunicación en un plano interior, casi secreto. La pregunta es cómo Eli lleva su genialidad mental del mundo oculto al expresado.", col:"plum"},
+      {t:"El don de la diferencia", d:"El signo oculto Acuario Casa 9 pide romper con las creencias heredadas y crear un sistema propio. La oveja negra que aporta genialidad al integrar lo diferente.", col:"blue"},
+      {t:"La estructura frente al yo", d:"Sol cuadratura Saturno: la identidad choca con el mandato de la autoridad y el deber. El trabajo es afirmarse sin quedar aplastado por la exigencia heredada.", col:"terra"},
+      {t:"Transformación en lo oculto", d:"Urano–Neptuno en Casa 8 y Plutón en Casa 6: secretos del sistema y regeneración profunda que piden salir a la luz para sanar.", col:"sage"},
+    ],
+    preguntas:[
+      "¿Cómo llevas tu genialidad mental del mundo interior al expresado?",
+      "¿Qué creencia heredada necesitas romper para crear tu propio sentido?",
+      "¿Dónde tu identidad choca con el mandato del deber y la autoridad?",
+      "¿Qué secreto o herida del sistema pide salir a la luz para transformarse?",
+    ],
+    movimiento:"El movimiento reparador integra las capas: llevar la genialidad de la Casa 12 (lo oculto) al mundo expresado, romper con las creencias heredadas para crear un sistema propio (Acuario Casa 9), afirmar la identidad sin quedar aplastada por el mandato del deber (Sol–Saturno), y permitir que lo transformador que vive en lo oculto (Urano–Neptuno Casa 8) salga a la luz. La libertad verdadera no es rebeldía contra el sistema, sino autenticidad creadora.",
+  },
+  memoria:{
+    definicion:"Un todo de información que se acumula a lo largo de la historia familiar y queda enquistado en el campo mórfico, y que puede manifestarse a través de sincronicidades. La carta muestra con qué parte tenemos una lealtad.",
+    tipos:"La memoria enfática es cuando hay mayor fuerza en un solo elemento. Puede haber memorias bifásicas o trifásicas cuando empatan varios elementos. Y hay ausencia de memoria cuando un elemento no tiene ningún planeta.",
+    dominante:{
+      elemento:"Aire",
+      pct:"4 de 10 · enfática",
+      jung:"Pensamiento",
+      linaje:"Masculino / colectivo",
+      generacional:"Hermanos, tíos, el colectivo, los amigos",
+      representantes:"Personas mentales, comunicadoras, inconformistas. Los que rompieron con lo establecido.",
+      emocion:"Ansiedad, dispersión, desconexión emocional. La mente por encima del sentir. Nerviosismo.",
+      proyeccion:"Racionalización, distanciamiento, intelectualización, huida hacia las ideas.",
+      arquetipos:"Inventor, filósofo, científico, revolucionario, artista de vanguardia, viajero, mediador.",
+      tema:"La libertad de pensamiento y la comunicación. Las ideas y los ideales del sistema. La necesidad de conexión intelectual. Lo que se transmite por la palabra y lo que se rompe con ella. Los vínculos fraternos y las amistades.",
+      descripcion:"La memoria Aire conecta con la mente, la palabra y los vínculos horizontales (hermanos, amigos, colectivo). El linaje valora las ideas, la originalidad y la capacidad de conectar. La lealtad se dirige a quienes rompieron con lo convencional, los inconformistas y renegados intelectuales del sistema.",
+      embrollos:"Rupturas y desarraigos por razones sociales, políticas o ideológicas. Ancestros que emigraron, se exiliaron o se distanciaron de la familia. Secretos que se guardan en el silencio. Dificultad para el arraigo emocional y la intimidad profunda.",
+      talentos:"Inteligencia rápida, comunicación, capacidad de abstracción, originalidad, visión de futuro, mediación, talento para la tecnología y las ideas nuevas.",
+      sintomas:"Sistema nervioso, respiración, pulmones, brazos, manos, hombros. Ansiedad, insomnio, tensión nerviosa, hiperactividad mental.",
+    },
+    ausencia:{
+      elemento:"Agua",
+      jung:"Sentimiento",
+      titulo:"Escasez de agua",
+      puntos:[
+        "Con solo un planeta en agua (Plutón), la conexión con la emoción profunda y la intuición es un recurso escaso que pide cultivarse.",
+        "La tendencia es a intelectualizar los sentimientos, a explicar en vez de sentir, a mantener las emociones a distancia.",
+        "El linaje pudo evitar el contacto con el dolor emocional refugiándose en la mente y las ideas. La intimidad profunda cuesta.",
+      ],
+      queRepresenta:"El agua es la emoción, la intuición, la memoria afectiva y la capacidad de fusión. Su escasez señala un sistema que priorizó la mente sobre el corazón, con dificultad para habitar y expresar el mundo emocional.",
+      integrar:"El trabajo invita a bajar de la cabeza al cuerpo y al corazón: prácticas que conecten con la emoción, el arte sensible, el contacto íntimo, para equilibrar la ligereza del aire con la profundidad del agua.",
+    },
+  },
+  signoOculto:{
+    signo:"Acuario",
+    casa:"Casa 9",
+    casaTitulo:"Ciencia ficción vs. la realidad anticipada",
+    definicion:"El signo oculto es el código encriptado que trae la información de cada sistema familiar, donde el individuo encuentra las claves para desanudar sus embrollos sistémicos. Muestra las luces y sombras, los potenciales despiertos o los puntos ciegos, y las trampas psicológicas. Nos habla de nuestro destino individual.",
+    calculo:"Se cuenta cada planeta según su elemento y cualidad. El signo oculto NO puede ser el signo del Sol (Géminis), la Luna (Tauro) ni el Ascendente (Géminis). El elemento dominante es Aire y, excluido Géminis, el signo aéreo con mayor puntaje es Acuario (aire fijo, con Saturno y el eje nodal).",
+    aforismo:"La genialidad es el don innato del signo oculto Acuario. Este don se manifiesta y se desarrolla a lo largo de la vida, o se queda subyugado por no ser capaz de creer en las propias posibilidades. El genio se descubre en la autenticidad de los movimientos para hacer las cosas de manera diferente, sin quedar atrapado en las normas de la familia.",
+    donOculto:"La genialidad. La capacidad de crear cosas extraordinarias y romper con las representaciones tradicionales.",
+    virtud:"Humanizarse — poner el genio al servicio de lo colectivo y no solo del propio ego.",
+    vicio:"El egoísmo. Cegarse por el propio brillo y esperar los aplausos externos, sobre todo en lo intelectual.",
+    retos:[
+      "¿Soy una persona auténtica?",
+      "¿Mi capacidad creativa es única o requiere de la de los demás?",
+      "¿Puedo mirar mi propio camino o me cargo con los conceptos de quienes vinieron antes?",
+    ],
+    somatico:"Calambres, desórdenes nerviosos, crisis ansiosas. Pérdida repentina del apetito, la libido o el sueño. Ceguera por shock nervioso, pérdida de atención.",
+    proposito:"Obtener una plena libertad de conocimientos con un enfoque auténtico, no condicionado por el ego. Desaprender el falso concepto del altruismo. Tomar de forma independiente las propias elecciones y crear nuevas estrategias de vida, sin dejarse condicionar por el ego familiar.",
+    casaLectura:"En Casa 9, «ciencia ficción vs. la realidad anticipada». El sistema estuvo plagado de ideales tradicionales, creencias ortodoxas o dogmas. Esta posición invita a romper con los sistemas anteriores para crear otros donde la persona se sienta identificada. Pudo haber una madre con visión fanática o unida a cultos; bisabuelos extranjeros, viajeros o de otras culturas. El propósito es desaprender lo heredado para crear un sistema filosófico propio y liberador, encontrando cambios insólitos en lugares lejanos al origen.",
+    planetasEn:"Saturno, Lilith, Palas y Vesta en Casa 9 refuerzan este signo oculto: la búsqueda de un sentido propio y la ruptura con lo heredado se juegan en el terreno de las creencias, los viajes y la filosofía de vida.",
+  },
+  lilithQ:{
+    posicion:"Escorpio · Casa 6",
+    formula:"⚸ Lilith Acuario C9 + ⚷ Quirón Leo C3",
+    calculo:"Punto medio entre Lilith (Acuario 12°09') y Quirón (Leo 18°13'), resultando en Escorpio 15°11'. En casas iguales desde AC Géminis, cae en Casa 6.",
+    definicion:"El punto medio Lilith-Quirón señala la parte psicológica y el área de vida donde expresamos la mayor sensación de fracaso existencial. Se percibe por las consecuencias de actitudes cristalizadas como «leyes mentira», que producen a la vez reacciones psicosomáticas.",
+    circuito:"Toda creencia limitante sobre uno mismo se asocia a una herida y a una emoción repetitiva. Pudo formarse en la gestación y cristalizarse en el nacimiento. El inconsciente proyecta dos posibilidades: seguir la ley mentira al pie de la letra, o sobrecompensarla.",
+    antecedentes:"En Escorpio, el fracaso se juega en el terreno del poder, la intimidad y lo que se esconde. Pudo haber en el linaje secretos, abusos de poder, pérdidas o muertes no elaboradas, y la creencia de que hay que controlar para sobrevivir o que mostrarse vulnerable es peligroso.",
+    leyMentira:"«Si me muestro, me destruyen.» «Tengo que controlarlo todo para estar a salvo.»",
+    sobrecompensacion:"Control excesivo, hermetismo, dificultad para confiar y soltar. Investigar y escudriñar a los demás mientras se mantiene oculto lo propio. Intensidad que puede volverse obsesiva.",
+    somatizacion:"Sistema reproductor, colon, procesos de eliminación. Tensiones ligadas a la retención y al control. Somatizaciones en momentos de crisis o pérdida.",
+    leyEterna:"Aprender que mostrarse vulnerable no destruye, sino que libera. Soltar el control como forma de defensa y confiar en el proceso de transformación. El poder verdadero está en la entrega, no en el dominio.",
+    experiencia:"Casa 6: el fracaso y su sendero se juegan en el trabajo, la salud y lo cotidiano. Se trata de sanar la relación entre la mente y el cuerpo, y de encontrar en el servicio y la rutina un lugar de transformación en vez de control.",
+    aspectos:"Plutón · Lilith · Quirón · Marte",
+    sanacion:"El sendero sanador permite mirar las situaciones incómodas hasta ser consciente de la ley mentira y convertirla en ley eterna. Aquí: pasar de controlar y ocultarse por miedo a la destrucción, a permitirse la vulnerabilidad como puerta de la transformación.",
+  },
+  ordenes:{
+    intro:"«Aparte del amor, aún se necesita algo más para que ese amor se logre: se requiere el conocimiento y el reconocimiento de un orden del amor que actúa en las profundidades del alma.» — Bert Hellinger. Los tres órdenes se leen a través de planetas concretos y sus aspectos.",
+    pertenencia:{
+      planeta:"Luna", glifo:"☽", titulo:"El derecho a un lugar",
+      def:"La vinculación enseña que cada persona en una familia tiene derecho a pertenecer. La Luna simboliza los vínculos primarios, la contención psicológica y a quienes nos criaron. Habla de la madre y de las mujeres del linaje.",
+      inclusionExclusion:"Los conflictos lunares muestran embrollos por la omisión de personas del clan. La inclusión lleva a la libertad; la exclusión deja fuera a aquellos cuyos destinos no fueron aceptados.",
+      posicionDebora:"Luna en Tauro · Casa 12",
+      aspectoDebora:{
+        nom:"Luna oposición Plutón",
+        txt:"La Luna en Tauro en Casa 12 habla de una vinculación materna vivida en lo oculto, con una necesidad profunda de seguridad y arraigo que no siempre se pudo satisfacer. La oposición a Plutón señala una intensidad emocional soterrada: la madre o el vínculo materno pudo vivirse con controles, pérdidas o secretos. Lo que se guarda en el inconsciente familiar (Casa 12) pide ser integrado. El trabajo es sacar a la luz lo que se vivió en la sombra y encontrar la seguridad interior sin necesitar el control.",
+      },
+    },
+    jerarquia:{
+      planeta:"Sol · Júpiter · Saturno", glifo:"☉", titulo:"El lugar que corresponde",
+      def:"El respeto y la jerarquía tratan de ocupar el lugar que a cada quien le corresponde según el orden temporal. El Sol habla del reconocimiento del padre; Júpiter, de la gratitud; Saturno, del respeto hacia lo establecido.",
+      tresPlanetas:[
+        {p:"Sol",r:"Reconocimiento ante la vida",d:"El Sol en Géminis Casa 12 busca reconocerse desde lo interior y lo mental, casi en secreto. Una identidad que se construye en la interioridad antes de mostrarse."},
+        {p:"Júpiter",r:"Gratitud hacia la vida",d:"Júpiter retrógrado en Libra Casa 4: la gratitud y la expansión se orientan al hogar y al equilibrio, con una revisión interna de lo recibido."},
+        {p:"Saturno",r:"Respeto hacia la vida",d:"Saturno en Acuario Casa 9: el mandato del deber se cruza con la libertad de pensamiento. La autoridad se cuestiona y se reformula."},
+      ],
+      posicionDebora:"Sol en Géminis C12 · Saturno en Acuario C9",
+      aspectoDebora:{
+        nom:"Sol cuadratura Saturno",
+        txt:"La cuadratura Sol–Saturno es el aspecto central de la jerarquía en esta carta: la identidad (Sol) choca de frente con el mandato de la autoridad y el deber (Saturno). El padre o la figura de autoridad pudo vivirse como exigente, ausente o limitante. Hay una sensación de tener que ganarse el derecho a existir a través del esfuerzo y el logro. El trabajo es afirmar la propia identidad sin quedar aplastado por la exigencia heredada, y encontrar el propio lugar sin competir con la autoridad del sistema.",
+      },
+    },
+    equilibrio:{
+      planeta:"Marte · Venus", glifo:"♀", titulo:"El dar y el recibir",
+      def:"Cuando se respetan la pertenencia y la jerarquía, llega el equilibrio entre el dar (Marte) y el recibir (Venus). El que da demasiado amenaza la relación; el que solo toma se llena de culpa.",
+      desequilibrios:[
+        {t:"Dar en exceso (Marte)",d:"Quien recibe se siente en deuda. Se da desde una postura de poder que obliga al otro."},
+        {t:"Recibir en exceso (Venus)",d:"Tomar en demasía sin devolver llena de culpa y crea dependencias afectivas."},
+      ],
+      posicionDebora:"Venus en Aries · Casa 11 / Marte en Leo · Casa 2",
+      aspectoDebora:{
+        nom:"Venus trígono Quirón · Venus conjunción Ceres",
+        txt:"Venus en Aries habla de un amor directo, independiente y con iniciativa propia. El trígono a Quirón ofrece un recurso: la capacidad de amar desde la comprensión del dolor, de acompañar heridas afectivas. La conjunción con Ceres liga el afecto a la nutrición y el cuidado. El trabajo del equilibrio es aprender a recibir con la misma libertad con que se da, sin que el amor se vuelva una conquista o una entrega desde la herida.",
+      },
+    },
+  },
+  saturno:{
+    mandatoDef:"Del latín manus (mano) + dare (dar): un encargo que debe darse en mano. Hay que cumplir con algo para poder pertenecer. Tal como se vive Saturno en la carta, así se transmiten las reglas a los hijos.",
+    signo:"Acuario",
+    signoNarrativa:"El signo plantea la narrativa del mandato heredado. En Acuario, los mandatos giran en torno a la libertad, la diferencia, los ideales colectivos y la ruptura con lo establecido — un Saturno que cuestiona la propia autoridad.",
+    casa:"Casa 9",
+    casaNarrativa:"La casa señala desde qué ámbito se viven los mandatos. En Casa 9, el mandato opera en el terreno de las creencias, la filosofía, los estudios superiores y los viajes.",
+    casaLectura:"Saturno en Casa 9 se expresa como una relación seria y exigente con las creencias y el conocimiento: la necesidad de construir un sistema de pensamiento sólido, o el peso de dogmas heredados que hay que revisar. Puede haber rigidez ideológica o, al integrarse, una sabiduría filosófica propia y madura.",
+    casaEscenario:"La Casa 9 es el escenario de la búsqueda de sentido: la filosofía, la espiritualidad, los viajes largos y la expansión de la conciencia. Describe cómo buscamos la verdad y damos significado a la vida.",
+    mandatos:[
+      {t:"«Debes pensar por ti mismo»", d:"El mandato paradójico de la libertad: hay que ser diferente, pero eso mismo puede volverse una norma."},
+      {t:"«No pertenezcas del todo»", d:"La lealtad a los que se distanciaron o rompieron con el sistema; el mandato de mantener una distancia."},
+      {t:"«Cuestiona lo establecido»", d:"Revisar las creencias heredadas como deber, a veces sin poder simplemente descansar en una certeza."},
+    ],
+    integrado:"Cuando las bases familiares se vivieron desde un orden sano, esta posición da una mente estructurada y original a la vez: la capacidad de construir un pensamiento propio, sólido y libre. Sabiduría, visión de futuro y autoridad intelectual auténtica.",
+    noIntegrado:"El mandato de la libertad puede volverse rebeldía compulsiva o, al contrario, rigidez ideológica. Dificultad para comprometerse o para descansar en una certeza. La distancia como defensa ante el miedo a pertenecer.",
+    claveLiberadora:"Pensamiento propio",
+    aspectos:[
+      {asp:"♄ □ ☉", nom:"Saturno cuadratura Sol", desc:"El mandato del deber choca con la identidad: la figura paterna o de autoridad vivida como exigente o limitante. Hay que ganarse el derecho a existir a través del logro.", figura:"El padre / la autoridad"},
+      {asp:"♄ ⚻ ⚵", nom:"Saturno quíncuncio Juno", desc:"Reajuste entre el deber y el compromiso de pareja: el vínculo vivido con una exigencia o una distancia que pide reformularse.", figura:"Lo conyugal"},
+      {asp:"♄ ☌ ⚶", nom:"Saturno conjunción Vesta", desc:"El mandato se une a la entrega y la renuncia: el deber vivido como sacrificio silencioso, sostener el sistema desde el esfuerzo callado.", figura:"La renuncia / el sostén silencioso"},
+    ],
+    aspectoLeyenda:"Los aspectos a Saturno (hasta Júpiter) revelan de qué figura provienen los mandatos: Saturno-Sol, del padre; Saturno-Luna, de la madre; Saturno-Venus, de las mujeres del clan; Saturno-Marte, de hombres enérgicos; Saturno-Mercurio, de una fuente externa; Saturno-Urano, hasta 4 generaciones atrás; Saturno-Plutón, más allá.",
+  },
+  ascendente:{
+    ac:"Géminis 11°49'",
+    mc:"Acuario 11°49'",
+    definicion:"El Ascendente Sistémico es la puerta de entrada al árbol: marca desde qué lugar el sistema familiar te colocó y qué papel esperaba de ti. A través de las casas derivadas, la carta se convierte en un mapa del linaje.",
+    acLectura:"Ascendente Géminis: el sistema pidió comunicación, curiosidad, versatilidad y ligereza. La entrada al mundo se hizo desde la palabra, el aprendizaje y la capacidad de conectar. La sombra: dispersión, dificultad para profundizar, inquietud mental constante.",
+    mcLectura:"Medio Cielo en Acuario: la vocación pública se orienta a lo colectivo, lo original, lo humanitario o lo tecnológico. El linaje llama a un lugar en el mundo ligado a la innovación, la libertad o el servicio a un grupo.",
+    casasDerivadasIntro:"Las casas derivadas permiten leer, desde el Ascendente del consultante, la carta de cada miembro del sistema. Se cuenta girando la rueda: la Casa 4 es la madre, la 10 el padre, y desde ahí se derivan abuelos y bisabuelos.",
+  },
+  casas:[
+    {eje:"4–10",sig:"Padre – Madre",plan:"Júpiter / — (MC Acuario)",lee:"La Casa 4 muestra a la madre y la 10 al padre. Júpiter retrógrado en el eje de la madre habla de una figura expansiva o idealizada, con una revisión interna de lo recibido de ella. El MC en Acuario apunta a un padre o una vocación ligada a lo original y lo colectivo."},
+    {eje:"1–7", sig:"Abuelos paternos",plan:"Sol, Mercurio / Nodo Norte",lee:"El eje AC–DC leído desde el padre revela a los abuelos paternos. Sol y Mercurio señalan una rama marcada por la identidad mental y la comunicación; el Nodo Norte indica un destino evolutivo que viene de esa línea."},
+    {eje:"3–9", sig:"Abuelos maternos",plan:"Quirón / Saturno, Lilith",lee:"El eje 3–9 desde la madre muestra a los abuelos maternos. Quirón (la herida) y Saturno (el deber) señalan una rama marcada por heridas no sanadas y mandatos rígidos de pensamiento y creencia."},
+    {eje:"11–5",sig:"Bisabuelos",plan:"Venus, Ceres / —",lee:"Los bisabuelos aparecen en las casas más alejadas. Venus y Ceres hablan de temas de afecto, valor y nutrición que vienen de muy atrás en el árbol y buscan integrarse."},
+  ],
+  asteroides:{
+    intro:"Los cuatro asteroides femeninos revelan figuras concretas del linaje —madre, hija, esposa, hermana— y las memorias que portan. Se activan a través de sus aspectos y su posición.",
+    lista:[
+      {
+        g:"⚳", nombre:"Ceres", arquetipo:"La Madre", elemento:"Fuego", pos:"Aries · Casa 11",
+        lectura:"Ceres simboliza la nutrición y el cuidado. En Aries, la nutrición se liga a la iniciativa y la independencia: ser cuidado impulsando la propia autonomía, o una madre que empujaba a valerse por sí mismo.",
+        conflicto:"Herida de abandono compensada con autosuficiencia. Madres que nutrían enseñando a no depender.",
+        manifestacion:"Independencia afectiva temprana, dificultad para pedir y recibir cuidado. Nutrir a otros dándoles autonomía.",
+        pregunta:"¿Aprendí a cuidarme solo porque no había otra opción?",
+        matiz:"En Aries Casa 11, el cuidado se juega en los grupos y las amistades: encontrar en los amigos la nutrición que se buscó en la familia.",
+      },
+      {
+        g:"⚴", nombre:"Palas", arquetipo:"La Hija", elemento:"Agua", pos:"Piscis · Casa 9",
+        lectura:"Palas representa la inteligencia estratégica y la hija del padre. En Piscis, la inteligencia se vuelve intuitiva, artística y compasiva: un saber que capta lo sutil más que lo lógico.",
+        conflicto:"Mujeres del linaje con una sabiduría intuitiva no reconocida. La inteligencia disuelta en la sensibilidad o el sacrificio.",
+        manifestacion:"Percepción fina, talento artístico o espiritual, capacidad de captar lo que no se dice. Dificultad para poner límites a esa sensibilidad.",
+        pregunta:"¿Confío en mi saber intuitivo o lo minimizo frente a la razón?",
+        matiz:"En Piscis Casa 9, la sabiduría intuitiva se orienta a lo filosófico y espiritual: comprender el sentido de la vida desde lo sutil.",
+      },
+      {
+        g:"⚵", nombre:"Juno", arquetipo:"La Esposa", elemento:"Fuego", pos:"Leo · Casa 2",
+        lectura:"Juno representa el compromiso y el matrimonio. En Leo, el vínculo se vive con orgullo, lealtad y necesidad de reconocimiento: amar y ser amado desde el brillo.",
+        conflicto:"Necesidad de ser reconocido y admirado en la pareja. Vínculos donde el ego y el orgullo juegan un papel central.",
+        manifestacion:"Relaciones intensas y leales, con necesidad de sentirse especial. Herida si no se recibe el reconocimiento esperado.",
+        pregunta:"¿Necesito brillar y ser admirado para sentirme amado en la pareja?",
+        matiz:"En Leo Casa 2, el compromiso se liga al valor propio: el vínculo como fuente de autoestima y reconocimiento.",
+      },
+      {
+        g:"⚶", nombre:"Vesta", arquetipo:"La Hermana mayor", elemento:"Agua", pos:"Piscis · Casa 9",
+        lectura:"Vesta simboliza el fuego interior y la renuncia. En Piscis, la entrega se vuelve espiritual y compasiva: sostener desde la fe, el arte o el servicio a algo más grande.",
+        conflicto:"Mujeres que se entregaron a un ideal o a la espiritualidad, a veces perdiéndose en el sacrificio o la evasión.",
+        manifestacion:"Vocación espiritual o artística, necesidad de un espacio sagrado interior. Riesgo de aislamiento o de perderse en lo trascendente.",
+        pregunta:"¿A qué ideal me entrego, y me olvido de mí en esa entrega?",
+        matiz:"En Piscis Casa 9 y junto a Saturno, la entrega se vuelve una búsqueda seria de sentido: la fe como estructura, no como huida.",
+      },
+    ],
+  },
+  tiposAspecto: DEMO_DEBORA.tiposAspecto,
+  soma:[
+    {s:"Géminis",    n:2, sys:"Sistema nervioso · pulmones · brazos · manos", foco:true},
+    {s:"Capricornio",n:2, sys:"Huesos · articulaciones · piel · rodillas", foco:false},
+    {s:"Aries",      n:2, sys:"Cabeza · cara · cerebro", foco:false},
+    {s:"Leo",        n:2, sys:"Corazón · espalda · columna", foco:false},
+    {s:"Acuario",    n:1, sys:"Circulación · tobillos · sistema nervioso", foco:false},
+  ],
+  somaFoco:"Dominante Aire con stellium en Géminis — mayor carga en el sistema nervioso, los pulmones y la respiración. Tendencia a la tensión nerviosa, la ansiedad, el insomnio y la hiperactividad mental. El cuerpo pide bajar de la cabeza y anclar la energía.",
+  notas:"Eli presenta memoria enfática Aire (4 planetas) con stellium en Géminis en Casa 12 (Sol, Mercurio, Luna en Tauro). El signo oculto Acuario Casa 9 apunta al don de la genialidad y la ruptura con lo heredado. Sol cuadratura Saturno marca la tensión con la autoridad; Urano conjunción Neptuno en Casa 8, la transformación generacional en lo oculto.\n\nExplorar en próxima sesión: cómo lleva su genialidad mental del mundo interior (Casa 12) al expresado; la relación con la figura paterna y el mandato del deber; el punto medio Lilith-Quirón en Escorpio (el control como defensa ante el miedo a la vulnerabilidad).",
+  aspectos:[
+    {
+      p1:"Sol", g1:"☉", p2:"Saturno", g2:"♄", tipo:"cuadratura", orbe:"Géminis C12 – Acuario C9 · orbe 0.1°",
+      tema:"Fricción entre la identidad y el deber",
+      conflicto:"La identidad (Sol) choca con el mandato de la autoridad y el deber (Saturno). El padre o figura de autoridad vivido como exigente, ausente o limitante.",
+      emocion:"Sensación de tener que ganarse el derecho a existir, autoexigencia, miedo a no ser suficiente.",
+      adulta:"Enorme capacidad de trabajo y estructura, pero con dificultad para sentirse legítimo sin logros. La identidad se construye contra la exigencia.",
+      repeticion:"Situaciones donde afirmarse implica enfrentar una autoridad; ganarse el lugar a través del esfuerzo.",
+      pregunta:"¿Cómo afirmo quién soy sin quedar aplastado por la exigencia heredada?",
+      orden:"Jerarquía",
+      focoDebora:true,
+    },
+    {
+      p1:"Urano", g1:"♅", p2:"Neptuno", g2:"♆", tipo:"conjunción", orbe:"Capricornio C8 · orbe 1.0°",
+      tema:"Transformación generacional en lo oculto",
+      conflicto:"Conjunción generacional en Casa 8: secretos del sistema, cambios sociales profundos y disoluciones que toda una generación comparte y que aquí se juegan en lo íntimo y lo compartido.",
+      emocion:"Sensibilidad hacia lo colectivo, intuición de cambios, inquietud ante lo que se oculta.",
+      adulta:"Capacidad de percibir y canalizar transformaciones profundas; talento para lo espiritual, lo psicológico o lo innovador.",
+      repeticion:"Secretos familiares que emergen; cambios súbitos en lo compartido (herencias, vínculos profundos).",
+      pregunta:"¿Qué secreto o transformación del sistema pide salir a la luz a través de mí?",
+      orden:"Equilibrio",
+      focoDebora:true,
+    },
+    {
+      p1:"Luna", g1:"☽", p2:"Plutón", g2:"♇", tipo:"oposición", orbe:"Tauro C12 – Escorpio C6 · orbe 1.2°",
+      tema:"Polarización entre la seguridad y el poder",
+      conflicto:"Tensión entre la necesidad de seguridad y arraigo (Luna en Tauro) y las fuerzas de control y transformación (Plutón). El vínculo materno vivido con intensidad, control o secretos.",
+      emocion:"Intensidad emocional soterrada, miedo a la pérdida, necesidad de control para sentirse seguro.",
+      adulta:"Gran fuerza emocional y capacidad de regeneración, pero con riesgo de vínculos intensos o de aferrarse a la seguridad.",
+      repeticion:"Relaciones donde la seguridad y el poder se mezclan; lo que se guardó en la sombra materna pide integrarse.",
+      pregunta:"¿Dónde busco seguridad a través del control, y cómo la encuentro dentro de mí?",
+      orden:"Pertenencia",
+      focoDebora:true,
+    },
+    {
+      p1:"Mercurio", g1:"☿", p2:"Júpiter", g2:"♃", tipo:"trígono", orbe:"Géminis C12 – Libra C4 · orbe 1.3°",
+      tema:"Fluidez entre la mente y la expansión",
+      conflicto:"Recurso heredado: una mente amplia, curiosa y capaz de conectar ideas con visión de conjunto. El don de comunicar y comprender.",
+      emocion:"Optimismo mental, curiosidad, gusto por aprender y transmitir.",
+      adulta:"Talento para la enseñanza, la escritura, la comunicación y la síntesis de ideas. Recurso que fluye pero puede dispersarse.",
+      repeticion:"Como trígono, es un don disponible que puede darse por sentado o dispersarse en mil intereses.",
+      pregunta:"¿Cómo enfoco mi mente amplia hacia algo con sentido y profundidad?",
+      orden:"Jerarquía",
+      focoDebora:false,
+    },
+    {
+      p1:"Venus", g1:"♀", p2:"Quirón", g2:"⚷", tipo:"trígono", orbe:"Aries C11 – Leo C3 · orbe 2.0°",
+      tema:"Fluidez entre el amor y la herida",
+      conflicto:"Recurso heredado: la capacidad de amar desde la comprensión del dolor, de acompañar heridas afectivas con calidez.",
+      emocion:"Sensibilidad afectiva, capacidad de empatía, calidez en el vínculo.",
+      adulta:"Talento para sanar a través del afecto y el arte; puede volverse acompañante o sanador afectivo. Recurso que fluye si se activa.",
+      repeticion:"El don de amar comprendiendo la herida, que puede darse por sentado o usarse para cuidar sin cuidarse.",
+      pregunta:"¿Cómo uso mi capacidad de amar comprendiendo, sin perderme en la herida del otro?",
+      orden:"Equilibrio",
+      focoDebora:false,
+    },
+    {
+      p1:"Marte", g1:"♂", p2:"Nodo N.", g2:"☊", tipo:"trígono", orbe:"Leo C2 – Sagitario C7 · orbe 0.5°",
+      tema:"Fluidez entre la acción y el propósito",
+      conflicto:"Recurso heredado: la energía y la iniciativa alineadas con el camino evolutivo. La acción al servicio del propósito de vida.",
+      emocion:"Determinación, coraje, entusiasmo por avanzar hacia lo que da sentido.",
+      adulta:"Capacidad de actuar con propósito y de liderar desde la autenticidad. Un recurso que impulsa el crecimiento.",
+      repeticion:"La fuerza disponible para avanzar hacia el propio destino, si se elige conscientemente.",
+      pregunta:"¿Cómo pongo mi energía al servicio de mi verdadero propósito?",
+      orden:"Jerarquía",
+      focoDebora:false,
+    },
+    {
+      p1:"Sol", g1:"☉", p2:"Juno", g2:"⚵", tipo:"sextil", orbe:"Géminis C12 – Leo C2 · orbe 0.3°",
+      tema:"Oportunidad entre la identidad y el vínculo",
+      conflicto:"Recurso disponible: la posibilidad de que la identidad y el compromiso de pareja se nutran mutuamente, de brillar también en el vínculo.",
+      emocion:"Deseo de compartir la propia luz, de un vínculo que reconozca quién se es.",
+      adulta:"Capacidad de construir vínculos donde la identidad se afirma en lugar de disolverse. Puerta abierta que pide activarse.",
+      repeticion:"La oportunidad de un compromiso que potencia el yo, disponible si se elige.",
+      pregunta:"¿Cómo construyo vínculos que afirmen quién soy en vez de diluirme?",
+      orden:"Jerarquía",
+      focoDebora:false,
+    },
+    {
+      p1:"Neptuno", g1:"♆", p2:"Plutón", g2:"♇", tipo:"sextil", orbe:"Capricornio C8 – Escorpio C6 · orbe 3.0°",
+      tema:"Oportunidad de transformación profunda y sensible",
+      conflicto:"Recurso generacional: capacidad de regenerar desde lo sutil y lo compasivo, compartido por toda una generación.",
+      emocion:"Intuición profunda, sensibilidad hacia lo invisible y lo colectivo.",
+      adulta:"Talento para acompañar procesos de transformación y sanación; disponible si se activa conscientemente.",
+      repeticion:"Recurso que se estanca si no se pone al servicio de forma deliberada.",
+      pregunta:"¿Cómo activo este don de transformación en lugar de dejarlo dormido?",
+      orden:"Equilibrio",
+      focoDebora:false,
+    },
+  ],
+  esferas: DEMO_DEBORA.esferas,
+  cfg: null,
+};
+
+let DEMO = DEMO_DEBORA;
+const CARTAS = { debora: DEMO_DEBORA, ru: DEMO_RU, eli: DEMO_ELI };
+function setCartaActiva(key){ DEMO = CARTAS[key] || DEMO_DEBORA; }
+
 // ── PALETTE ───────────────────────────────────────────────────────────────────
 const C = {
   bg:       "#F0EEEB",   // gris cálido, como papel
@@ -432,8 +1093,8 @@ function NatalWheel({ size = 500 }) {
   // crecen en sentido ANTIHORARIO. Mantenemos el sistema de pantalla estándar
   // (0°=arriba, horario) pero transformamos el grado zodiacal a un "grado de dibujo":
   //   drawDeg = 90 - (d - AC_DEG)   → AC queda a la izquierda, zodíaco antihorario.
-  const AC_DEG = 159.74;   // Virgo 9°44'
-  const MC_DEG = 66.37;    // Géminis 6°22'
+  const AC_DEG = DEMO.acDeg ?? 159.74;
+  const MC_DEG = DEMO.mcDeg ?? 66.37;
   const zdraw = (d) => 270 - (d - AC_DEG);          // grado zodiacal → grado de dibujo (pantalla)
   const pt = (r, d) => {                             // d = grado zodiacal absoluto
     const dd = zdraw(d);
@@ -457,25 +1118,18 @@ function NatalWheel({ size = 500 }) {
   ];
 
   // Planetas de Debora — deg = grado zodiacal absoluto (0=Aries 0°)
-  const PLANETS = [
-    { g:"\u2609\uFE0E", label:"Sol",      deg:232.42, gr:"22", min:"25", r:false },
-    { g:"\u263D\uFE0E", label:"Luna",     deg:98.60,  gr:"08", min:"36", r:false },
-    { g:"\u263F\uFE0E", label:"Mercurio", deg:235.38, gr:"25", min:"23", r:false },
-    { g:"\u2640\uFE0E", label:"Venus",    deg:228.62, gr:"18", min:"37", r:true  },
-    { g:"\u2642\uFE0E", label:"Marte",    deg:309.30, gr:"09", min:"18", r:false },
-    { g:"\u2643\uFE0E", label:"J\u00fapiter",  deg:343.32, gr:"13", min:"19", r:true  },
-    { g:"\u2644\uFE0E", label:"Saturno",  deg:247.60, gr:"07", min:"36", r:false },
-    { g:"\u2645\uFE0E", label:"Urano",    deg:259.73, gr:"19", min:"44", r:false },
-    { g:"\u2646\uFE0E", label:"Neptuno",  deg:273.47, gr:"03", min:"28", r:false },
-    { g:"\u2647\uFE0E", label:"Plut\u00f3n",   deg:217.05, gr:"07", min:"03", r:false },
-    { g:"\u260A\uFE0E", label:"Nodo N.",  deg:20.80,  gr:"20", min:"48", r:false },
-    { g:"\u26B7\uFE0E", label:"Quir\u00f3n",   deg:80.95,  gr:"20", min:"57", r:true  },
-    { g:"\u26B8\uFE0E", label:"Lilith",   deg:200.80, gr:"20", min:"48", r:false },
-    { g:"\u26B3\uFE0E", label:"Ceres",    deg:216.02, gr:"06", min:"01", r:false },
-    { g:"\u26B4\uFE0E", label:"Palas",    deg:194.67, gr:"14", min:"40", r:false },
-    { g:"\u26B5\uFE0E", label:"Juno",     deg:257.60, gr:"17", min:"36", r:false },
-    { g:"\u26B6\uFE0E", label:"Vesta",    deg:4.75,   gr:"04", min:"45", r:true  },
-  ];
+  // Glifos con variation selector para renderizado tipográfico
+  const GLYPH = {
+    "Sol":"\u2609\uFE0E","Luna":"\u263D\uFE0E","Mercurio":"\u263F\uFE0E","Venus":"\u2640\uFE0E",
+    "Marte":"\u2642\uFE0E","Júpiter":"\u2643\uFE0E","Saturno":"\u2644\uFE0E","Urano":"\u2645\uFE0E",
+    "Neptuno":"\u2646\uFE0E","Plutón":"\u2647\uFE0E","Nodo N.":"\u260A\uFE0E","Quirón":"\u26B7\uFE0E",
+    "Lilith":"\u26B8\uFE0E","Ceres":"\u26B3\uFE0E","Palas":"\u26B4\uFE0E","Juno":"\u26B5\uFE0E","Vesta":"\u26B6\uFE0E"
+  };
+  // Derivar los planetas de la carta activa
+  const PLANETS = DEMO.planetas.map(p => {
+    const [gr, minRaw] = p.grado.replace("'","").split("°");
+    return { g: GLYPH[p.p] || p.g, label: p.p, deg: p.deg, gr: gr, min: (minRaw||"00"), r: p.r };
+  });
 
   // Signo de cada planeta a partir del grado absoluto
   const signIdx = deg => Math.floor(((deg % 360) + 360) % 360 / 30);
@@ -959,7 +1613,7 @@ function PCarta(){
         </div>
         {/* Ángulos */}
         <div style={{display:'flex',gap:24,marginTop:14,paddingTop:12,borderTop:`1px solid ${C.border}`}}>
-          {[{l:"AC",v:"Virgo 9°45'"},{l:"MC",v:"Géminis 6°22'"}].map(a=>(
+          {[{l:"AC",v:DEMO.acLabel},{l:"MC",v:DEMO.mcLabel}].map(a=>(
             <div key={a.l} style={{fontSize:12,color:C.sub}}>
               <span style={{fontWeight:700,color:C.plum,letterSpacing:'.08em',marginRight:8}}>{a.l}</span>{a.v}
             </div>
@@ -1200,20 +1854,19 @@ function PAscendente(){
       <div style={card}>
         <div style={label}>Casas derivadas · el mapa del linaje</div>
         <p style={{fontSize:12.5,color:C.sub,lineHeight:1.65,fontWeight:300,marginBottom:16}}>{A.casasDerivadasIntro}</p>
-        <table style={{width:'100%',borderCollapse:'collapse'}}>
-          <thead><tr>
-            {["Eje","Figura del sistema","Planetas"].map(h=>(
-              <th key={h} style={{fontSize:10,fontWeight:700,letterSpacing:'.12em',textTransform:'uppercase',color:C.muted,textAlign:'left',padding:'0 10px 10px',borderBottom:`1px solid ${C.border}`}}>{h}</th>
-            ))}
-          </tr></thead>
-          <tbody>{DEMO.casas.map((c,i)=>(
-            <tr key={i}>
-              <td style={{...td,fontWeight:600,color:C.plum}}>{c.eje}</td>
-              <td style={td}>{c.sig}</td>
-              <td style={{...td,color:C.muted,fontSize:12}}>{c.plan}</td>
-            </tr>
-          ))}</tbody>
-        </table>
+        {DEMO.casas.map((c,i)=>(
+          <div key={i} style={{padding:'14px 0',borderBottom:i<DEMO.casas.length-1?`1px solid ${C.border}`:'none'}}>
+            <div style={{display:'flex',alignItems:'baseline',gap:10,marginBottom:6,flexWrap:'wrap'}}>
+              <span style={{fontSize:12,fontWeight:700,color:C.plum,letterSpacing:'.04em',background:C.plumSoft,padding:'2px 8px',borderRadius:4}}>{c.eje}</span>
+              <span style={{fontSize:14,fontWeight:600,color:C.text}}>{c.sig}</span>
+              <span style={{fontSize:11.5,color:C.muted,fontWeight:300,marginLeft:'auto'}}>{c.plan}</span>
+            </div>
+            {c.lee && <p style={{fontSize:12.5,color:C.sub,lineHeight:1.65,fontWeight:300}}>{c.lee}</p>}
+          </div>
+        ))}
+        <p style={{fontSize:11,color:C.muted,lineHeight:1.6,fontWeight:300,marginTop:14,paddingTop:12,borderTop:`1px solid ${C.border}`,fontStyle:'italic'}}>
+          Cada casa derivada abre un escenario del linaje: la profesión, la salud, las creencias o los recursos de cada figura. Los planetas que caen en ella describen con detalle cómo se vivió esa historia y cómo resuena hoy en la consultante.
+        </p>
       </div>
     </div>
   );
@@ -1452,7 +2105,7 @@ function PPuntoMedio(){
       <div style={{...card,borderTop:`3px solid ${C.plum}`}}>
         <div style={label}>Punto Medio Lilith–Quirón</div>
         <div style={{fontSize:20,fontWeight:700,color:C.text,letterSpacing:'-.01em',marginBottom:6}}>El fracaso existencial y su sendero</div>
-        <p style={{fontSize:13,color:C.plum,fontWeight:600,marginBottom:10}}>⚸ Lilith Libra C2 + ⚷ Quirón Géminis C10 ℞ → {L.posicion}</p>
+        <p style={{fontSize:13,color:C.plum,fontWeight:600,marginBottom:10}}>{L.formula || "⚸ Lilith + ⚷ Quirón"} → {L.posicion}</p>
         <p style={{fontSize:11.5,color:C.muted,fontWeight:300,marginBottom:12,fontStyle:'italic'}}>{L.calculo}</p>
         <p style={cardText}>{L.definicion}</p>
       </div>
@@ -1533,7 +2186,7 @@ function PSomatica(){
         </table>
         <div style={{marginTop:16,padding:'12px 14px',background:C.terraSoft,borderRadius:8,borderLeft:`2px solid ${C.terra}`}}>
           <div style={{fontSize:10,fontWeight:700,letterSpacing:'.1em',textTransform:'uppercase',color:C.terra,marginBottom:5}}>Foco principal</div>
-          <p style={{fontSize:13,color:C.sub,lineHeight:1.65,fontWeight:300}}>Concentración escorpiana (Sol, Mercurio, Venus, Plutón, Ceres) — mayor carga en sistema inmune, reproductivo y colon.</p>
+          <p style={{fontSize:13,color:C.sub,lineHeight:1.65,fontWeight:300}}>{DEMO.somaFoco}</p>
         </div>
       </div>
     </div>
@@ -1720,7 +2373,7 @@ function PSintesis(){
 }
 
 function PNotas(){
-  const[v,setV]=useState("La consultante presenta una concentración muy significativa en Escorpio (Sol, Mercurio, Venus, Plutón, Ceres), toda en Casa 3, con Luna en Cáncer en Casa 10. El signo oculto Piscis sugiere patrones de sacrificio y disolución operando de forma inconsciente.\n\nExplorar en próxima sesión: relación con la figura materna y su impacto en la vocación; el poder y los secretos del linaje expresados a través de la palabra y el vínculo con los hermanos.");
+  const[v,setV]=useState(DEMO.notas || "");
   return(
     <div style={{padding:'24px 20px'}}>
       <div style={card}>
@@ -2894,9 +3547,14 @@ function Landing({go,demo,scrollTo}){
   );
 }
 
-function Form({go,back}){
-  const[f,setF]=useState({nombre:"Debora Moratalla Martín",fecha:"1986-10-25",hora:"03:00",lugar:"Madrid, España",email:"",pro:false,noHora:false});
+function Form({go,back,elegirCarta}){
+  const[f,setF]=useState({nombre:"",fecha:"",hora:"",lugar:"",email:"",pro:false,noHora:false});
   const h=(k,v)=>setF(p=>({...p,[k]:v}));
+  const ejemplos=[
+    {k:"debora",n:"Debora Moratalla",d:"25 oct 1986 · Madrid",el:"Memoria Agua · Signo oculto Piscis",col:C.blue},
+    {k:"ru",n:"Rubén Muro",d:"7 ago 1990 · Cáceres",el:"Memoria Tierra · Signo oculto Capricornio",col:C.sage},
+    {k:"eli",n:"Eli",d:"21 may 1993 · Graz",el:"Memoria Aire · Signo oculto Acuario",col:C.terra},
+  ];
   return(
     <div className="form-wrap">
       <button className="form-back" onClick={back}><Ico n="back" s={13} c={C.muted}/> Volver</button>
@@ -2912,7 +3570,41 @@ function Form({go,back}){
       </div>
       <div className="form-right">
         <h1 className="form-title">Carta natal clínica</h1>
-        <p className="form-sub">Introduce los datos del consultante para generar su mapa sistémico completo, según el método de Enzo De Paola.</p>
+        <p className="form-sub">Explora una de las tres cartas de ejemplo, o introduce los datos de un consultante nuevo. Todas se calculan con el método de casas iguales de Enzo De Paola.</p>
+
+        {/* Cartas de ejemplo */}
+        <div style={{marginBottom:26}}>
+          <div style={{fontSize:10,fontWeight:700,letterSpacing:'.14em',textTransform:'uppercase',color:C.muted,marginBottom:12}}>Cartas de ejemplo</div>
+          <div style={{display:'flex',flexDirection:'column',gap:8}}>
+            {ejemplos.map(e=>(
+              <button key={e.k} onClick={()=>elegirCarta&&elegirCarta(e.k)}
+                style={{display:'flex',alignItems:'center',gap:14,padding:'14px 16px',borderRadius:12,
+                  border:`1px solid ${C.border}`,background:C.bg2,cursor:'pointer',textAlign:'left',
+                  transition:'transform .15s,box-shadow .15s,border-color .15s',width:'100%'}}
+                onMouseEnter={ev=>{ev.currentTarget.style.transform="translateY(-2px)";ev.currentTarget.style.boxShadow="0 6px 20px rgba(0,0,0,.08)";ev.currentTarget.style.borderColor=e.col;}}
+                onMouseLeave={ev=>{ev.currentTarget.style.transform="none";ev.currentTarget.style.boxShadow="none";ev.currentTarget.style.borderColor=C.border;}}>
+                <div style={{width:38,height:38,borderRadius:'50%',flexShrink:0,background:`${e.col}22`,
+                  display:'flex',alignItems:'center',justifyContent:'center',
+                  fontFamily:"'Cormorant Garamond',serif",fontSize:20,fontWeight:600,color:e.col}}>
+                  {e.n.charAt(0)}
+                </div>
+                <div style={{flex:1,minWidth:0}}>
+                  <div style={{fontSize:14,fontWeight:600,color:C.text}}>{e.n}</div>
+                  <div style={{fontSize:11.5,color:C.muted,fontWeight:300}}>{e.d} · {e.el}</div>
+                </div>
+                <span style={{fontSize:16,color:C.muted,flexShrink:0}}>→</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div style={{display:'flex',alignItems:'center',gap:12,margin:'0 0 22px'}}>
+          <div style={{flex:1,height:1,background:C.border}}/>
+          <span style={{fontSize:11,color:C.muted,fontWeight:400}}>o introduce una carta nueva</span>
+          <div style={{flex:1,height:1,background:C.border}}/>
+        </div>
+
+        {/* Formulario manual */}
         <div className="field"><label className="field-label">Nombre completo</label><input className="field-input" value={f.nombre} onChange={e=>h('nombre',e.target.value)} placeholder="Nombre y apellidos"/></div>
         <div className="field-row">
           <div className="field"><label className="field-label">Fecha de nacimiento</label><input className="field-input" type="date" value={f.fecha} onChange={e=>h('fecha',e.target.value)}/></div>
@@ -2921,7 +3613,8 @@ function Form({go,back}){
         <div className="field"><label className="field-label">Lugar de nacimiento</label><input className="field-input" value={f.lugar} onChange={e=>h('lugar',e.target.value)} placeholder="Ciudad, País"/></div>
         <div className="field"><label className="field-label">Email (opcional)</label><input className="field-input" type="email" value={f.email} onChange={e=>h('email',e.target.value)} placeholder="Para recibir tu carta"/></div>
         <div className="chk-row" style={{marginBottom:20}}><input type="checkbox" id="pro" checked={f.pro} onChange={e=>h('pro',e.target.checked)}/><label htmlFor="pro">Soy profesional / terapeuta</label></div>
-        <button className="btn-submit" onClick={go}>Generar mi carta natal →</button>
+        <button className="btn-submit" onClick={go}>Generar carta natal →</button>
+        <p style={{fontSize:11,color:C.muted,fontWeight:300,marginTop:12,textAlign:'center'}}>En esta demo, una carta nueva mostrará la lectura de ejemplo de Debora.</p>
       </div>
     </div>
   );
@@ -2939,9 +3632,11 @@ function Loading(){
   );
 }
 
-function Dashboard({back}){
+function Dashboard({back, carta, cambiarCarta}){
   const[tab,setTab]=useState(0);
   const[saved,setSaved]=useState(false);
+  // Asegurar que la carta activa está sincronizada en cada render
+  setCartaActiva(carta);
   const doSave=()=>{setSaved(true);setTimeout(()=>setSaved(false),1800);};
   const tabs=[
     {l:"Carta",i:"chart"},{l:"Memoria",i:"chart"},{l:"Signo Oculto",i:"eye"},
@@ -2954,12 +3649,25 @@ function Dashboard({back}){
     <div style={{minHeight:'100vh',background:C.bg}}>
       <div className="dash-header">
         <button className="dash-back" onClick={back}><Ico n="back" s={13} c={C.muted}/>Nueva consulta</button>
-        <div><div className="dash-name">{DEMO.nombre}</div><div className="dash-meta">{DEMO.fecha} · {DEMO.hora} · {DEMO.lugar}</div></div>
+        <div style={{display:'flex',alignItems:'center',gap:16}}>
+          <div><div className="dash-name">{DEMO.nombre}</div><div className="dash-meta">{DEMO.fecha} · {DEMO.hora} · {DEMO.lugar}</div></div>
+          {cambiarCarta && (
+            <div style={{display:'flex',gap:4,background:C.bg3,borderRadius:8,padding:3}}>
+              {[["debora","Debora"],["ru","Rubén"],["eli","Eli"]].map(([k,l])=>(
+                <button key={k} onClick={()=>{cambiarCarta(k);setTab(t=>t);}}
+                  style={{fontSize:11,fontWeight:600,padding:"5px 12px",borderRadius:6,border:"none",cursor:"pointer",
+                    background:carta===k?C.plum:"transparent",color:carta===k?"#fff":C.sub,transition:"all .15s"}}>
+                  {l}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
         <button className={`btn-save${saved?" saved":""}`} onClick={doSave}>{saved?"✓ Guardado":"Guardar"}</button>
       </div>
       <div className="dash-body">
         <div className="dash-left">
-          <NatalWheel size={350}/>
+          <NatalWheel size={350} key={carta}/>
           <div style={{display:'flex',gap:14,justifyContent:'center',margin:'8px 0 4px',flexWrap:'wrap'}}>
             {[[C.blue,"5,3","Trígono"],[C.terra,"3,3","Cuadratura"],[C.muted,"","Conjunción"]].map(([c,d,l])=>(
               <div key={l} style={{display:'flex',alignItems:'center',gap:5,fontSize:10,color:C.muted,fontWeight:500}}>
@@ -2979,8 +3687,8 @@ function Dashboard({back}){
                   <td style={{fontSize:10,color:C.muted}}>{p.r?'℞':''}</td>
                 </tr>
               ))}
-              <tr><td style={{fontWeight:600,fontSize:11,color:C.plum}}>AC</td><td colSpan={3} style={{fontSize:11,color:C.muted}}>Virgo 9°45'</td></tr>
-              <tr><td style={{fontWeight:600,fontSize:11,color:C.plum}}>MC</td><td colSpan={3} style={{fontSize:11,color:C.muted}}>Géminis 6°22'</td></tr>
+              <tr><td style={{fontWeight:600,fontSize:11,color:C.plum}}>AC</td><td colSpan={3} style={{fontSize:11,color:C.muted}}>{DEMO.acLabel}</td></tr>
+              <tr><td style={{fontWeight:600,fontSize:11,color:C.plum}}>MC</td><td colSpan={3} style={{fontSize:11,color:C.muted}}>{DEMO.mcLabel}</td></tr>
             </tbody>
           </table>
         </div>
@@ -2992,7 +3700,7 @@ function Dashboard({back}){
               </button>
             ))}
           </div>
-          <Panel/>
+          <Panel key={carta+"-"+tab}/>
         </div>
       </div>
     </div>
@@ -3001,17 +3709,24 @@ function Dashboard({back}){
 
 export default function App(){
   const[page,setPage]=useState("landing");
+  const[carta,setCarta]=useState("debora");
+  // Reasignar la carta activa ANTES de renderizar cualquier vista
+  setCartaActiva(carta);
   const go=()=>setPage("form");
-  const demo=()=>setPage("dash");                 // salta directo a la carta de Debora
+  const demo=(key)=>{ if(typeof key==="string"){setCarta(key);setCartaActiva(key);} setPage("form"); };
   const submit=()=>{setPage("loading");setTimeout(()=>setPage("dash"),2200)};
+  // Elegir una de las cartas de ejemplo → loading → dashboard
+  const elegirCarta=(key)=>{ setCarta(key); setCartaActiva(key); setPage("loading"); setTimeout(()=>setPage("dash"),1600); };
   const scrollTo=(id)=>{const el=document.getElementById(id);if(el)el.scrollIntoView({behavior:"smooth"});};
+  const cambiarCarta=(key)=>{ setCarta(key); setCartaActiva(key); };
   return(
     <>
       <style>{css}</style>
       {page==="landing"&&<Landing go={go} demo={demo} scrollTo={scrollTo}/>}
-      {page==="form"&&<Form go={submit} back={()=>setPage("landing")}/>}
+      {page==="form"&&<Form go={submit} back={()=>setPage("landing")} elegirCarta={elegirCarta}/>}
       {page==="loading"&&<Loading/>}
-      {page==="dash"&&<Dashboard back={()=>setPage("landing")}/>}
+      {page==="dash"&&<Dashboard back={()=>setPage("landing")} carta={carta} cambiarCarta={cambiarCarta}/>}
+      <Analytics />
     </>
   );
 }
